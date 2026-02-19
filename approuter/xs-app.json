@@ -3,9 +3,9 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/northwind/(.*)$",
+      "source": "^/backend/(.*)$",
       "target": "/$1",
-      "destination": "Northwind",
+      "destination": "CLARC_BACKEND",
       "authenticationType": "none",
       "csrfProtection": false
     },

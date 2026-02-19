@@ -5,7 +5,7 @@
     {
       "source": "^<apply-service-segment-path>/(.*)$",
       "target": "<apply-service-segment-path>/$1",
-      "destination": "Northwind",
+      "destination": "CLARC_BACKEND",
       "authenticationType": "none",
       "csrfProtection": false
     },

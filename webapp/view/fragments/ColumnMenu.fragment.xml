@@ -1,0 +1,6 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core"
+  xmlns:tcm="sap.m.table.columnmenu">
+  <tcm:Menu>
+    <tcm:QuickSort change=".onSortChange"/>
+  </tcm:Menu>
+</core:FragmentDefinition>

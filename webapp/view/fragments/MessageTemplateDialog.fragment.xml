@@ -1,0 +1,63 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <Dialog
+        id="msgTemplateDialog"
+        title="Edit Message Template"
+        contentWidth="700px"
+        contentHeight="400px"
+        resizable="true"
+        draggable="true">
+
+        <content>
+            <HBox width="100%">
+                <!-- Linke Seite: Subject + Body -->
+                <VBox width="100%" class="sapUiSmallMargin">
+                    <Label text="Subject:"/>
+                    <Input
+                        placeholder="Placeholder"
+                        value="{template>subject}"
+                        class="sapUiSmallMarginBottom" />
+
+                    <Label text="Body:"/>
+                    <TextArea
+                        value="{template>body}"
+                        rows="10"
+                        width="100%"
+                        placeholder="Write your message here." />
+                </VBox>
+
+                <!-- Rechte Seite: Sprachenliste -->
+                <VBox width="200px" class="sapUiSmallMarginEnd">
+                    <List
+                        id="lstLanguages"
+                        mode="SingleSelect"
+                        selectionChange=".onLanguageSelectionChange"
+                        items="{
+                            path: 'template>/languages'
+                        }">
+                        <StandardListItem
+                            title="{template>name}"
+                            type="Active" />
+                    </List>
+                </VBox>
+            </HBox>
+        </content>
+
+        <beginButton>
+            <Button
+                text="Cancel"
+                press=".onTemplateDialogCancel" />
+        </beginButton>
+
+        <endButton>
+            <Button
+                text="Save"
+                type="Emphasized"
+                press=".onTemplateDialogSave" />
+        </endButton>
+
+    </Dialog>
+
+</core:FragmentDefinition>

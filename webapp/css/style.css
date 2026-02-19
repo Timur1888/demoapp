@@ -1,1 +1,70 @@
 /* Enter your custom styles here */
+.myCreateBtn .sapMBtnInner{
+  background: var(--sapAccentColor7);
+  color: var(--sapButton_TextColor);
+  font-family: var(--sapFontFamily);
+}
+
+/* Fokusrahmen im Filter-Popover verstecken */
+.filterPopoverList .sapMLIB.sapMLIBFocusable:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.filterDeleteBtn {
+    margin-bottom: 0.2rem; /* feinjustieren nach Geschmack */
+}
+
+.hiddenFileUploader {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  left: -9999px;   /* aus dem sichtbaren Bereich schieben */
+}
+
+#btnVariants {
+    font-weight: bold;
+    padding-right: 0.5rem;
+}
+
+
+/* Scrollbereich für die PDF-Preview innerhalb des Carousels */
+.pdfPageScroll {
+  height: 75vh;      /* mehr Platz als vorher */
+  overflow: auto;    /* scrollen, falls unten abgeschnitten */
+}
+
+/* Bild nicht verzerren, aber volle Breite */
+.pdfPageScroll img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+
+/* DateRangeSelection Text + Placeholder kleiner */
+.facturaDateSmallText input {
+  font-size: 0.85rem;        /* kleiner Text */
+}
+
+/* Placeholder noch etwas kleiner */
+.facturaDateSmallText input::placeholder {
+  font-size: 0.8rem;
+}
+
+
+/* Ganzer Column Header beim Hover grau machen */
+.sapMTableTH:hover {
+  background-color: var(--sapList_Hover_Background);
+}
+
+/* Sicherstellen, dass der Inhalt die volle Höhe nutzt */
+.sapMTableTH > .sapMTableTHContent {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+

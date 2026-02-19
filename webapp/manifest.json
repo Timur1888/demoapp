@@ -28,7 +28,13 @@
           }
         }
       }
-    }
+    },
+    "dataSources": {
+      "clarc": {
+        "uri": "/backend/",
+        "type": "JSON"
+      }
+  }
   },
   "sap.ui": {
     "technology": "UI5",
@@ -47,23 +53,46 @@
     }
   },
   "sap.ui5": {
-    "flexEnabled": true,
+    "flexEnabled": false,
     "dependencies": {
       "minUI5Version": "1.144.1",
       "libs": {
+        "sap.ui.comp": {},
+        "sap.ui.fl": {},
+        "sap.ui.mdc": {},
         "sap.m": {},
-        "sap.ui.core": {}
+        "sap.f": {},
+        "sap.ui.core": {},
+        "sap.ui.unified": {},
+        "sap.ui.layout": {}
       }
     },
     "contentDensities": {
       "compact": true,
       "cozy": true
     },
+    "config": {
+      "fullWidth": true          
+    },
     "models": {
+      "backend": {
+        "type": "sap.ui.model.json.JSONModel"
+      },
+      "auth": {
+        "type": "sap.ui.model.json.JSONModel"
+      },
+      "filterModel": {
+        "type": "sap.ui.model.json.JSONModel"
+      },
+      "billingConfig": {
+        "type": "sap.ui.model.json.JSONModel"
+      },
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "demo.app.demoapp.i18n.i18n"
+          "bundleName": "demo.app.demoapp.i18n.i18n",
+          "supportedLocales": ["de", "en"],
+          "fallbackLocale": "en"
         }
       }
     },
@@ -77,8 +106,9 @@
     "routing": {
       "config": {
         "routerClass": "sap.m.routing.Router",
-        "controlAggregation": "pages",
-        "controlId": "app",
+        "controlAggregation": "beginColumnPages",
+        "controlId": "layout",
+        "clearControlAggregation": true,
         "transition": "slide",
         "type": "View",
         "viewType": "XML",
@@ -89,16 +119,29 @@
       "routes": [
         {
           "name": "RouteView1",
-          "pattern": ":?query:",
+          "pattern": "",
           "target": [
             "TargetView1"
           ]
-        }
+        },
+              {
+          "name": "DetailsRoute",
+          "pattern": "Details/{invoiceId}",      
+          "target": ["Details"]
+      }
       ],
       "targets": {
         "TargetView1": {
           "id": "View1",
-          "name": "View1"
+          "name": "View1",
+          "viewLevel": "1",
+          "controlAggregation": "beginColumnPages"
+        },
+        "Details":{
+          "id": "Details",
+          "name": "Details",
+          "viewLevel": 2,
+          "controlAggregation": "midColumnPages"
         }
       }
     },
