@@ -98,9 +98,6 @@ sap.ui.define([
                 control: this.oFilterBar
             });
             this.oSmartVariantManagement.addPersonalizableControl(oPersInfo);
-
-            // Initialisieren (Startschuss)
-            this.oSmartVariantManagement.initialise(function() {}, this.oFilterBar);
             //--------------------------------------------------
 
             //--------------------Sortierung--------------------- 

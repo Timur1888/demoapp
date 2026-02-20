@@ -17,7 +17,7 @@
             <f:DynamicPageTitle id="dptTitle">
 
                 <f:heading>
-                    <svm:SmartVariantManagement id="svm" showExecuteOnSelection="true" />
+                    <svm:SmartVariantManagement id="svm" showExecuteOnSelection="true" persistencyKey="BillingFilterBarVariant"/>
                 </f:heading>
                 	<f:expandedContent>
 						<Label id="expandedLabel" text="No filters active" />
