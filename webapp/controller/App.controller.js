@@ -8,7 +8,8 @@ sap.ui.define([
       onInit() {
         
       const oViewModel = new JSONModel({
-        layout: "OneColumn"
+        layout: "OneColumn",
+        openDetailsOnMatch: false
       });
 
       // Modell auf App-View setzen, wird zu Kind-Views (View1, Details) durchgereicht

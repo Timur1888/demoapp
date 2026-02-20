@@ -265,22 +265,41 @@ sap.ui.define([
         // ==========================================================
         // Panel komplett neu wenn User eine Rechnung selektiert
         // ==========================================================
+        _resetDetailsUI: function () {
+          // Tab immer auf Overview
+          this.byId("itbDetails")?.setSelectedKey("overview");
+
+          // Scroll nach oben (IDs wie besprochen)
+          this.byId("scOverview")?.scrollTo(0, 0, 0);
+          this.byId("scHistory")?.scrollTo(0, 0, 0);
+          this.byId("detailsPage")?.scrollTo(0, 0, 0);
+        },
         _onRouteMatched: function (oEvent) {
-            this.getView().getModel("docCache").setProperty("/canSave", false);
+            const oMain = this.getView().getModel("mainView");
+            const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 
-            const sInvoiceId =  String(oEvent.getParameter("arguments").invoiceId).trim();
-
-            // Layout sicherstellen
-            const oMainViewModel = this.getView().getModel("mainView");
-            if (oMainViewModel) {
-                oMainViewModel.setProperty("/layout", "TwoColumnsBeginExpanded");
+            // Reload / direkter Einstieg: Details NICHT öffnen, sondern zurück zur Liste
+            if (oMain && !oMain.getProperty("/openDetailsOnMatch")) {
+              oMain.setProperty("/layout", "OneColumn");
+              oRouter.navTo("RouteView1", {}, true);
+              return;
             }
 
+            // Normale Navigation aus View1: Details darf aufgehen
+            if (oMain) {
+              oMain.setProperty("/layout", "TwoColumnsBeginExpanded");
+              oMain.setProperty("/openDetailsOnMatch", false);
+            }
+
+            requestAnimationFrame(() => this._resetDetailsUI());
+            
             const oModel = this.getOwnerComponent().getModel("backend");
             if (!oModel) {
                 console.error("Model 'backend' nicht gefunden");
                 return;
             }
+            this.getView().getModel("docCache").setProperty("/canSave", false);
+            const sInvoiceId =  String(oEvent.getParameter("arguments").invoiceId).trim();
 
             const aInvoices = oModel.getProperty("/value") || [];
             const sWanted = String(sInvoiceId || "").trim();

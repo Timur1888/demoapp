@@ -234,7 +234,7 @@ sap.ui.define([
 
     onClose: function (oController) {
       const oRouter = UIComponent.getRouterFor(oController);
-      oRouter.navTo("RouteView1");
+      oRouter.navTo("RouteView1", {}, true);
 
       const oMainViewModel = oController.getView().getModel("mainView");
       if (oMainViewModel) {

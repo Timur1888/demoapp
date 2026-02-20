@@ -103,7 +103,7 @@
                             </fb:control>
                         </fb:FilterGroupItem>
                         <!-- ====== Recipient name ====== -->
-                        <fb:FilterGroupItem
+                       <fb:FilterGroupItem
                             id="fgiRecipientName"
                             name="RecipientName"
                             label="Recipient Name"
@@ -115,14 +115,8 @@
                                         width="50%"
                                         placeholder="Recipient Name"
                                         value="{filterModel>/recipientName}"
-                                        enableSuggestions="true"
                                         search=".onAddFilter"
-                                        suggest=".onSuggest"
-                                        suggestionItems="{
-                                            path: 'filterModel>/RecipientNameList',
-                                            sorter: { path: 'text' }
-                                        }">
-                                    <SuggestionItem text="{filterModel>text}" key="{filterModel>key}" />
+                                        >
                                     </SearchField>
                             </fb:control>
                         </fb:FilterGroupItem>
@@ -202,7 +196,7 @@
                     </fb:FilterGroupItem>
 
                     <!-- ====== Sub Type ====== -->
-                    <fb:FilterGroupItem
+                     <fb:FilterGroupItem
                         id="fgiSubType"
                         name="SubType"
                         label="Sub Type"
@@ -214,14 +208,7 @@
                                     width="50%"
                                     value="{filterModel>/subType}"
                                     placeholder="Sub Type"
-                                    enableSuggestions="true"
-                                    search=".onAddFilter"
-                                    suggest=".onSuggest"
-                                    suggestionItems="{
-                                        path: 'filterModel>/SubTypeList',
-                                        sorter: { path: 'text' }
-                                    }">
-                                <SuggestionItem text="{filterModel>text}" key="{filterModel>key}" />
+                                    search=".onAddFilter">
                                 </SearchField>
                         </fb:control>
                     </fb:FilterGroupItem>

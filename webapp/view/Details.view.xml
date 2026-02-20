@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:unified="sap.ui.unified" xmlns:upload="sap.m.upload" controllerName="demo.app.demoapp.controller.Details">
-   <Page title="Invoice {backend>MetaData/Object/Data/Basics/Number/Value}" showFooter="true">
+   <Page id = "detailsPage" title="Invoice {backend>MetaData/Object/Data/Basics/Number/Value}" showFooter="true">
       <!-- X-Schließen-Button rechts oben -->
       <headerContent>
          <Button id="btnClose" icon="sap-icon://decline" type="Transparent" tooltip="Close" press=".onClose" class="detailCloseBtn" />
@@ -12,6 +12,7 @@
                <!-- ================== OVERVIEW TAB ================== -->
                <IconTabFilter key="overview" text="Overview">
                <ScrollContainer
+               id="scHistory"
 					height="100%"
 					width="100%"
 					horizontal="false"
@@ -131,6 +132,7 @@
                <!-- ================== HISTORY TAB ================== -->
                <IconTabFilter key="history" text="History">
                               <ScrollContainer
+               id="scOverview"
 					height="100%"
 					width="100%"
 					horizontal="false"

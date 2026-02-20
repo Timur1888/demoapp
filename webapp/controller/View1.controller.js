@@ -149,6 +149,16 @@ sap.ui.define([
             if (!this._bSvmReady) {
                 return; // nur frühe Init-Searchs blocken
             }
+
+            const oRouter = UIComponent.getRouterFor(this);
+            oRouter.navTo("RouteView1", {}, true);
+
+            const oMainViewModel = this.getView().getModel("mainView");
+            if (oMainViewModel) {
+                oMainViewModel.setProperty("/layout", "OneColumn");
+                
+            }
+
             this.oSmartVariantManagement.currentVariantSetModified(true);
             this.oFilterBar.fireFilterChange(oEvent || {});
 
@@ -258,31 +268,6 @@ sap.ui.define([
         }
         oPop.openBy(oButton);
         },
-
-        // // suggestion für die Werte aus NettoValue
-        // onSuggest: function(oEvent) {
-        //     var oSF = oEvent.getSource();
-        //     var oBinding = oSF.getBinding("suggestionItems");
-
-        //     this.onAddFilter();
-
-        //     if (!oBinding) {
-        //         return;
-        //     }
-        //     //.replace(/^ccIT_/, "");
-        //     var sValue = (oEvent.getParameter("suggestValue") || oSF.getValue() || "").trim();
-
-        //     if (!sValue) {
-        //         oBinding.filter([]);
-        //         oSF.suggest();
-        //         return;
-        //     }
-
-        //     oBinding.filter([
-        //         new sap.ui.model.Filter("text", sap.ui.model.FilterOperator.Contains, sValue)
-        //     ]);
-        //     oSF.suggest();
-        // },
 
         //hole den Filterzusatndustand, der im Variant gespeichert werden soll
         fetchData: function () {
@@ -598,6 +583,7 @@ sap.ui.define([
             const sInvoiceId = oCtx.getProperty("MetaData/Object/Data/Basics/Number/Value");
 
             const oMainViewModel = this.getView().getModel("mainView");
+            oMainViewModel.setProperty("/openDetailsOnMatch", true);
             oMainViewModel.setProperty("/layout", "TwoColumnsBeginExpanded");
 
             const oRouter = UIComponent.getRouterFor(this);
