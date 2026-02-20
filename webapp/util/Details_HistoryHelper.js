@@ -71,7 +71,10 @@ sap.ui.define([], function () {
       oHistory.setProperty("/busy", true);
 
       try {
-        const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
+        //test
+        // const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
+        //cci001
+        const sBase = "https://cci001.app.clarc.com:443/application/api/v1/documenthub";
         const sUrl1 = `${sBase}/document(${encodeURIComponent(sDocId)})`;
         const sUrl2 = `${sBase}/document/${encodeURIComponent(sDocId)}`;
 

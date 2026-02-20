@@ -57,7 +57,10 @@ sap.ui.define([
               ((oAuth?.getProperty("/tokenType") || "Bearer").trim() + " " + (oAuth?.getProperty("/token") || "").trim()).trim();
 
             const sDocId = oModel.getProperty("/CurrentInvoice/Id"); 
-            const sUrl = `https://test.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
+            //test
+            // const sUrl = `https://test.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
+            //cci001
+            const sUrl = `https://cci001.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
 
             const oResp = await fetch(sUrl, {
               method: "POST",

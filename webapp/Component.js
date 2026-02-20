@@ -66,22 +66,49 @@ sap.ui.define([
     },
     
     _loadBackendData: async function () {
-    const loginUrl = "https://test.app.clarc.com/application/api/v1/iam/login";
-    // const statisticDataUrl  = "https://test.app.clarc.com/application/api/v1/documenthub/statistic";
+    //Test
+    // const loginUrl = "https://test.app.clarc.com/application/api/v1/iam/login";
+    //cci001
+    const loginUrl = "https://cci001.app.clarc.com/application/api/v1/IAM/login";
+    //Test
+    // const billingConfigUrl =
+    //     "https://test.app.clarc.com/application/api/v1/bpm/billing" +
+    //     "?$expand=SalesOrgs" +
+    //     "&$filter=(Name eq 'Default')";
+    //cci001
     const billingConfigUrl =
-        "https://test.app.clarc.com/application/api/v1/bpm/billing" +
-        "?$expand=SalesOrgs" +
-        "&$filter=(Name eq 'Default')";
+      "https://cci001.app.clarc.com/application/api/v1/bpm/billing" +
+      "?$expand=SalesOrgs" +
+      "&$filter=(Name eq 'Default')";
 
+      // TEST-Cluster:
+      // const oPayload = {
+      //   Credentials: {
+      //     Username:   "Willi",
+      //     Password:   "Ecmdemo2025!",
+      //     Tenant:     "acme",
+      //     SystemClass:"ccSC_Development",
+      //     Language:   "DE",
+      //     FingerPrint:"none",
+      //     Code:       "",
+      //     Token: {
+      //       Data: "",
+      //       Type: "ccVT_Unknown"
+      //     },
+      //     RequiredRoles: [],
+      //     ClientId:      "",
+      //     ClientSecret:  ""
+      //   }
+      // };
 
-      // TODO: Diese Werte durch eure echten dev-Zugangsdaten ersetzen
+      // cci001-Cluster:
       const oPayload = {
         Credentials: {
           Username:   "Willi",
           Password:   "Ecmdemo2025!",
-          Tenant:     "acme",
+          Tenant:     "cclabs",
           SystemClass:"ccSC_Development",
-          Language:   "DE",
+          Language:   "ENG",
           FingerPrint:"none",
           Code:       "",
           Token: {
@@ -119,15 +146,6 @@ sap.ui.define([
 
         // 2) Mehrere Datenquellen parallel laden
         const [billingResp] = await Promise.all([
-        // const [statResp, billingResp] = await Promise.all([
-          // fetch(statisticDataUrl, {
-          //   method: "GET",
-          //   credentials: "include",
-          //   headers: {
-          //     "Authorization":
-          //       loginData.Session.TokenType + " " + loginData.Session.Token
-          //   }
-          // }),
           fetch(billingConfigUrl, {
             method: "GET",
             credentials: "include",
@@ -138,17 +156,10 @@ sap.ui.define([
           })
         ]);
 
-        // if (!statResp.ok) {
-        //   console.error("Statistic Request Error:", statResp.status);
-        //   return;
-        // }
         if (!billingResp.ok) {
           console.error("Billing Config Request Error:", billingResp.status);
           return;
         }
-
-        // const statisticJson = await statResp.json();
-        // this.getModel("statistic").setData(statisticJson);
 
         const billingJson = await billingResp.json();
         this.getModel("billingConfig").setData(billingJson);
@@ -161,17 +172,12 @@ sap.ui.define([
   },
       //baut das Modell filterModel aus, das Modell wird für Filtering eingesetzt
 _rebuildFilter: function () {
-  // const oStatistics    = this.getModel("statistic");
   const oBillingConfig = this.getModel("billingConfig");
   const oFb            = this.getModel("filterModel");
 
-  // if (!oStatistics || !oBillingConfig || !oFb) {
-  //   return;
-  // }
     if (!oBillingConfig || !oFb) {
     return;
   }
-
   // --------------------
   // A) Status aus /States
   // --------------------
@@ -183,20 +189,6 @@ _rebuildFilter: function () {
       return { key: s, text: s };
     })
 );
-  // const aStateRows = oStatistics.getProperty("/States") || [];
-  // const mStates = Object.create(null);
-
-  // aStateRows.forEach(function (r) {
-  //   const sState = r && r.State;
-  //   if (sState) mStates[sState] = true;
-  // });
-
-  // oFb.setProperty(
-  //   "/StatusList",
-  //   Object.keys(mStates).sort().map(function (s) {
-  //     return { key: s, text: s };
-  //   })
-  // );
 
   // -------------------------------------
   // B) Sales Orgs aus billingConfig.value[0].SalesOrgs

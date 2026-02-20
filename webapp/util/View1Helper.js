@@ -48,7 +48,10 @@ _loadInvoicesServer: async function (mOpts) {
   const bAppend  = !!mOpts.append;
   const sFilter  = (mOpts.filter || "").trim();           // kompletter Filter (base + user)
   const sOrderBy = (mOpts.orderBy || "CreationDate desc");
-  const sBaseUrl = (mOpts.baseUrl || "https://test.app.clarc.com"); // ggf. via Destination ersetzen
+  //test
+  // const sBaseUrl = (mOpts.baseUrl || "https://test.app.clarc.com");
+  //cci001
+  const sBaseUrl = (mOpts.baseUrl || "https://cci001.app.clarc.com");
   const sPath    = (mOpts.path || "/application/api/v1/documenthub/document");
 
   // Wichtig: Blobs/MetaData sind oft groß -> ggf. für Liste abwählen

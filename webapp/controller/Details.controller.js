@@ -524,9 +524,12 @@ onSendInvoice: async function () {
     return;
   }
 
+  //Test
+  // const sUrl =
+  //   `https://test.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
+  //cci001
   const sUrl =
-    `https://test.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
-
+    `https://cci001.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
   try {
     oView.setBusy(true);
 
@@ -603,8 +606,10 @@ onSavePanel: async function (saveAfterSend) {
   oFull.MetaData.Object.Data.Subject = sSubject;
   oFull.MetaData.Object.Data.AdditionalInformation = sBody;
   oFull.MetaData.Object.Data.Basics.Recipient.Email[0].Address = sRecipient;
-
-  const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
+  //Test
+  //const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
+  //cci001
+  const sBase = "https://cci001.app.clarc.com:443/application/api/v1/documenthub";
   const sUrl1 = `${sBase}/document(${encodeURIComponent(sDocId)})`;
   const sUrl2 = `${sBase}/document/${encodeURIComponent(sDocId)}`;
 

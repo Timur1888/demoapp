@@ -42,8 +42,12 @@ sap.ui.define([], function () {
         throw new Error("Kein Token im auth-Model gefunden (Login/Token speichern prüfen).");
       }
 
-      const sUrl =
-        `https://test.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
+      //test
+      // const sUrl =
+      //   `https://test.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
+      //cci001
+            const sUrl =
+        `https://cci001.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
 
       const r = await fetch(sUrl, {
         method: "POST",
@@ -253,8 +257,12 @@ sap.ui.define([], function () {
       const sTok  = oAuth?.getProperty("/token");
       if (!sType || !sTok) throw new Error("Kein Token im auth-Model gefunden.");
 
-      const sUrl =
-        `https://test.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
+      //test
+      // const sUrl =
+      //   `https://test.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
+      //cci001
+            const sUrl =
+        `https://cci001.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
 
       const r = await fetch(sUrl, {
         method: "POST",
