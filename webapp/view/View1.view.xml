@@ -75,8 +75,7 @@
                                     width="18rem"
                                     placeholder="Search"
                                     value="{filterModel>/globalSearch}"   
-                                    change = ".onAddFilter"
-                                    search=".onAddFilter" />
+                                    search=".onSearch" />
                             </fb:control>
                         </fb:FilterGroupItem>
 
@@ -92,7 +91,7 @@
                             id="mcbStatus"
                          name="State"
                           selectedKeys="{filterModel>/selectedStates}"
-                          selectionChange=".onAddFilter"
+                          selectionFinish=".onSearch"
                             items="{
                                 path: 'filterModel>/StatusList',
                                 templateShareable: false
@@ -115,7 +114,7 @@
                                         width="50%"
                                         placeholder="Recipient Name"
                                         value="{filterModel>/recipientName}"
-                                        search=".onAddFilter"
+                                        search=".onSearch"
                                         >
                                     </SearchField>
                             </fb:control>
@@ -134,8 +133,7 @@
                                 width="50%"
                                 placeholder="From - to"
                                 value="{filterModel>/nettoValue}"
-                                search=".onAddFilter" 
-                                change=".onAddFilter"/>
+                                search=".onSearch" />
                         </fb:control>
                         </fb:FilterGroupItem>
 
@@ -152,8 +150,7 @@
                                 width="50%"
                                 placeholder="Invoice No."
                                 value="{filterModel>/invoiceNo}"
-                                search=".onAddFilter" 
-                                change=".onAddFilter"/>
+                                search=".onSearch"/>
                         </fb:control>
                     </fb:FilterGroupItem>
 
@@ -169,7 +166,7 @@
                             id="mcbSalesOrg"
                             name="SalesOrganisation"
                             selectedKeys="{filterModel>/salesOrganisation}"
-                            selectionChange=".onAddFilter"
+                            selectionFinish=".onSearch"
                             items="{filterModel>/SalesOrganisationList}">
                             <core:Item key="{filterModel>key}" text="{filterModel>text}" />
                             </MultiComboBox>
@@ -188,7 +185,7 @@
                                 id="mcbInvType"
                                 name="InvoiceType"
                                 selectedKeys="{filterModel>/invoiceType}"
-                                selectionChange=".onAddFilter"
+                                selectionFinish=".onSearch"
                                 items="{filterModel>/InvoiceTypeList}">
                                 <core:Item key="{filterModel>key}" text="{filterModel>text}" />
                             </MultiComboBox>
@@ -208,11 +205,12 @@
                                     width="50%"
                                     value="{filterModel>/subType}"
                                     placeholder="Sub Type"
-                                    search=".onAddFilter">
+                                    search=".onSearch">
                                 </SearchField>
                         </fb:control>
                     </fb:FilterGroupItem>
 
+                    <!-- ====== Factura Datee ====== -->
                     <fb:FilterGroupItem
                         id="fgiFacturaDate"
                         name="FacturaDate"
