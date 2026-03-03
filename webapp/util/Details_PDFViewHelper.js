@@ -58,9 +58,9 @@ sap.ui.define([
 
             const sDocId = oModel.getProperty("/CurrentInvoice/Id"); 
             //test
-            // const sUrl = `https://test.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
+            const sUrl = `https://test.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
             //cci001
-            const sUrl = `https://cci001.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
+            // const sUrl = `https://cci001.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
 
             const oResp = await fetch(sUrl, {
               method: "POST",

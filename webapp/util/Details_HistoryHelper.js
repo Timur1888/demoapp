@@ -72,9 +72,9 @@ sap.ui.define([], function () {
 
       try {
         //test
-        // const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
+        const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
         //cci001
-        const sBase = "https://cci001.app.clarc.com:443/application/api/v1/documenthub";
+        // const sBase = "https://cci001.app.clarc.com:443/application/api/v1/documenthub";
         const sUrl1 = `${sBase}/document(${encodeURIComponent(sDocId)})`;
         const sUrl2 = `${sBase}/document/${encodeURIComponent(sDocId)}`;
 
