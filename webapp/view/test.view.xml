@@ -1,5 +1,0 @@
-<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:unified="sap.ui.unified" xmlns:upload="sap.m.upload" controllerName="demo.app.demoapp.controller.test">
-
-<VBox width="100%" direction="Column" id="vbox0"/>
-
-</mvc:View>

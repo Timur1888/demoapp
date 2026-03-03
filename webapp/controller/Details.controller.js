@@ -26,8 +26,8 @@ sap.ui.define([
       }
 
       var oSendModel = new sap.ui.model.json.JSONModel({
-        transferFormat: "pdf",
-        deliveryMethod: "email",
+        transferFormat: "",
+        deliveryMethod: "",
         recipient: "",
         cc: "",
         bcc: "",
@@ -330,7 +330,12 @@ sap.ui.define([
             // Recipient name aus Backend holen
             var oSend = this.getView().getModel("send");
             var oBackend = this.getOwnerComponent().getModel("backend");
-            oSend.setProperty("/recipient", oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/Recipient/Email/0/Address")); 
+            oSend.setProperty("/recipient", oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/Recipient/Email/0/Address"));
+            //Transfer Format
+            const sBackend = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/TransferFormat"); 
+            const mMap = { "ccBF_PDF": "pdf", "ccBF_XInvoice": "xrechnung", "ccBF_FacturX": "zugferd", "ccBF_Paper": "paper" };// oder Mapping, wenn Backend andere Codes liefert:
+            oSend.setProperty("/transferFormat", mMap[sBackend] || "pdf");
+            this._sOldTransferFormat = this.byId("transF").getSelectedItem()?.getText(); //fürs Save den Wert merken
             oSend.setProperty("/canSend", true); //Send-Button klickbar machen
 
 
@@ -587,6 +592,20 @@ onSavePanel: async function (saveAfterSend) {
   const sBody    = (oTemplate.getProperty(sBasePath + "/body") || "").trim();
   var sRecipient = (oSend.getProperty("/recipient") || "").trim();
   var sNewRecipient = this.byId("inpRecipient").getValue().trim();
+  var sTransferFormat = ("ccBF_" + this._sOldTransferFormat).trim();
+  var sNewTransferFormat = ("ccBF_" + this.byId("transF").getSelectedItem()?.getText()).trim();
+
+  if (sTransferFormat !== sNewTransferFormat) {
+    // speichern
+    sTransferFormat = sNewTransferFormat; // optional nach Save aktualisieren
+  }
+  if (sTransferFormat == "ccBF_XRechnung") {
+    sTransferFormat = "ccBF_XInvoice"
+  }
+  if (sTransferFormat == "ccBF_ZUGFeRD"){
+    sTransferFormat = "ccBF_FacturX"
+  }
+
   if (sRecipient != sNewRecipient){
     sRecipient = sNewRecipient;
   }
@@ -605,6 +624,7 @@ onSavePanel: async function (saveAfterSend) {
   oFull.MetaData.Object.Data ??= {};
   oFull.MetaData.Object.Data.Subject = sSubject;
   oFull.MetaData.Object.Data.AdditionalInformation = sBody;
+  oFull.MetaData.Object.Data.Basics.TransferFormat = sTransferFormat;
   oFull.MetaData.Object.Data.Basics.Recipient.Email[0].Address = sRecipient;
   //Test
   const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";

@@ -80,17 +80,17 @@
                      <!-- Output -->
                      <Title text="Output" level="H4" class="sapUiMediumMarginTop" />
 <VBox class="sapUiSmallMarginTop" width="97%">
-    <Select width="100%" class="sapUiSmallMarginBottom" selectedKey="{send>/transferFormat}" change=".onValueChange">
+    <Select id = "transF" width="100%" class="sapUiSmallMarginBottom" selectedKey="{send>/transferFormat}" change=".onValueChange">
         <items>
-            <core:Item key="transF" text="Transfer Format" />
-            <core:Item key="fx" text="Factur-X" />
             <core:Item key="pdf" text="PDF" />
+            <core:Item key="xrechnung" text="XRechnung" />
+            <core:Item key="zugferd" text="ZUGFeRD" />
+            <core:Item key="paper" text="Paper" />
         </items>
     </Select>
 
     <Select width="100%" class="sapUiSmallMarginBottom" selectedKey="{send>/deliveryMethod}" change=".onValueChange">
         <items>
-            <core:Item key="delMeth" text="Delivery Method" />
             <core:Item key="email" text="Email" />
             <core:Item key="post" text="Postal Service" />
         </items>
