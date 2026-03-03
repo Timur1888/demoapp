@@ -68,3 +68,21 @@
   align-items: center;
 }
 
+/* so einstellen, dass "Information" komplett reinpasst */
+:root{
+  --histStatusCol: 4rem; 
+  --histGap: 0.5rem;   /* ≈ 19px = ca. 0,5 cm */
+}
+
+.histRow{
+  display: grid;
+  grid-template-columns: var(--histStatusCol) 1fr;
+  column-gap: var(--histGap);
+  align-items: start;
+  width: 100%;
+}
+
+.histText{
+  width: 100%;
+  min-width: 0; /* wichtig fürs Wrapping bei langen Messages */
+}

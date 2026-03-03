@@ -150,32 +150,29 @@
                      growingScrollToLoad="true"
                      showSeparators="Inner">
 
-                     <CustomListItem>
-                     <VBox width="100%">
+<CustomListItem>
+  <HBox class="histRow" width="100%">
+    <!-- linke Spalte: Status -->
+    <ObjectStatus
+      class="histStatus"
+      text="{history>statusText}"
+      state="{history>statusState}"
+      inverted="true" />
 
-                        <!-- 1. Zeile: Message links, Status rechts -->
-                        <HBox width="100%" justifyContent="SpaceBetween" alignItems="Center">
-                           <Text
-                           text="{history>message}"
-                           wrapping="true"
-                           maxLines="2" />
+    <!-- rechte Spalte: Datum/Code + Message -->
+    <VBox class="histText" width="100%">
+      <Text
+        text="{parts: [{path:'history>date'}, {path:'history>code'}], formatter: '.formatHistoryMeta'}"
+        wrapping="false"
+        class="sapUiTinyMarginTop sapUiTinyMarginBottom sapUiTinyMarginBegin" />
 
-                           <ObjectStatus
-                           text="{history>statusText}"
-                           state="{history>statusState}"
-                           inverted="true"
-                           class="sapUiTinyMarginBegin" />
-                        </HBox>
-
-                        <!-- 2. Zeile: Datum | Code -->
-                        <Text
-                        text="{parts: [{path:'history>date'}, {path:'history>code'}], formatter: '.formatHistoryMeta'}"
-                        wrapping="false"
-                        class="sapUiTinyMarginTop sapUiTinyMarginBottom sapUiSmallMarginBottom sapUiTinyMarginBegin"
-                        />
-
-                     </VBox>
-                     </CustomListItem>
+      <Text
+        text="{history>message}"
+        wrapping="true"
+        class="sapUiTinyMarginBottom sapUiTinyMarginBegin" />
+    </VBox>
+  </HBox>
+</CustomListItem>
 
                   </List>
                </VBox>
