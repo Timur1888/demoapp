@@ -362,7 +362,7 @@
                 </Column>
 
                 <!-- Creation Date -->
-                <Column id="colCreationDate" headerMenu="columnHeaderMenu">
+                <Column id="colCreationDate" headerMenu="columnHeaderMenu" width="105px">
                     <customData>
                     <core:CustomData key="sortKey" value="History/Created/Date/$date" writeToDom="false"/>
                     </customData>
@@ -370,7 +370,7 @@
                 </Column>
 
                 <!-- Dispatch Date -->
-                <Column id="colDispatchDate" headerMenu="columnHeaderMenu">
+                <Column id="colDispatchDate" headerMenu="columnHeaderMenu" width="105px">
                     <customData>
                     <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/SendDate/$date" writeToDom="false"/>
                     </customData>
@@ -378,7 +378,7 @@
                 </Column>
 
                 <!-- Transfer Format -->
-                <Column id="colTransferFormat" headerMenu="columnHeaderMenu">
+                <Column id="colTransferFormat" headerMenu="columnHeaderMenu" width="115px">
                     <customData>
                     <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/TransferFormat" writeToDom="false"/>
                     </customData>
@@ -386,7 +386,7 @@
                 </Column>
 
                 <!-- Delivery Method (formatter in cell -> sort by raw DeliveryMethod) -->
-                <Column id="colDeliveryMethod" headerMenu="columnHeaderMenu">
+                <Column id="colDeliveryMethod" headerMenu="columnHeaderMenu" width="150px">
                     <customData>
                     <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/DeliveryMethod" writeToDom="false"/>
                     </customData>
@@ -402,7 +402,7 @@
                 </Column>
 
                 <!-- PDF (formatter in cell -> sort by raw TransferFormat) -->
-                <Column id="colPdf" headerMenu="columnHeaderMenu">
+                <Column id="colPdf" headerMenu="columnHeaderMenu" width="55px">
                     <customData>
                     <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/TransferFormat" writeToDom="false"/>
                     </customData>
@@ -513,8 +513,6 @@
                             <ObjectStatus
                                 text="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatAbbreviations'}"
                                 icon="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatDeliveryMethodIcon'}" />
-
-
 
                             <!-- Delivery ID -->
                             <Text id="txtDeliveryIdCell" text="{backend>MetaData/Object/Data/BusinessPartners/1/LeitwegId/Value}" />
