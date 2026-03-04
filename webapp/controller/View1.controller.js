@@ -239,7 +239,8 @@ sap.ui.define([
                     text: sColLabel,
                     select: function (oEvent) {
                         col.setVisible(oEvent.getParameter("selected"));
-                    }
+                        this.oSmartVariantManagement.currentVariantSetModified(true);
+                    }.bind(this)
                     }).addStyleClass("sapUiSmallMarginEnd")
                 ]
                 })
@@ -271,41 +272,58 @@ sap.ui.define([
 
         //hole den Filterzusatndustand, der im Variant gespeichert werden soll
         fetchData: function () {
-            const aData = this.oFilterBar.getAllFilterItems().reduce(function (aResult, oFilterItem) {
-                const oControl = oFilterItem.getControl();
-                let vData;
+        const aData = this.oFilterBar.getAllFilterItems().reduce(function (aResult, oFilterItem) {
+            const oControl = oFilterItem.getControl();
+            let vData;
 
-                if (oControl && oControl.getSelectedKeys) {
-                vData = oControl.getSelectedKeys();
-                } else if (oControl && oControl.getValue) {
-                vData = oControl.getValue();
-                } else {
-                vData = null;
-                }
+            if (oControl && oControl.getSelectedKeys) {
+            vData = oControl.getSelectedKeys();
+            } else if (oControl && oControl.getValue) {
+            vData = oControl.getValue();
+            } else {
+            vData = null;
+            }
 
-                aResult.push({
-                groupName: oFilterItem.getGroupName(),
-                fieldName: oFilterItem.getName(),
-                fieldData: vData
-                });
-                return aResult;
-            }, []);
-
-            // Sortierung dazu
-            aData.push({
-                groupName: "TABLE",
-                fieldName: "__SORT__",
-                fieldData: this._oSortState // {path:"...", descending:true/false}
+            aResult.push({
+            groupName: oFilterItem.getGroupName(),
+            fieldName: oFilterItem.getName(),
+            fieldData: vData
             });
-            return aData;
+            return aResult;
+        }, []);
+
+        // Sortierung speichern
+        aData.push({
+            groupName: "TABLE",
+            fieldName: "__SORT__",
+            fieldData: this._oSortState // {path:"...", descending:true/false}
+        });
+
+        // Spaltenstatus speichern
+        const oTable = this.byId("tblBilling");
+        const aColsState = (oTable && oTable.getColumns ? oTable.getColumns() : []).map(function (oCol) {
+            return {
+            id: oCol.getId(),
+            visible: oCol.getVisible()
+            };
+        });
+
+        aData.push({
+            groupName: "TABLE",
+            fieldName: "__COLUMNS__",
+            fieldData: aColsState
+        });
+
+        return aData;
         },
 
 
         //spiele den im Variant gespeicherten Filterzustand wieder ein
+        //spiele den im Variant gespeicherten Filterzustand wieder ein
         applyData: function (aData) {
         // Filter
         aData.forEach(function (oDataObject) {
-            if (oDataObject.fieldName === "__SORT__") { return; }
+            if (oDataObject.fieldName === "__SORT__" || oDataObject.fieldName === "__COLUMNS__") { return; }
 
             const oControl = this.oFilterBar.determineControlByName(oDataObject.fieldName, oDataObject.groupName);
             if (!oControl) { return; }
@@ -330,8 +348,51 @@ sap.ui.define([
             oBinding.sort([new Sorter(this._oSortState.path, !!this._oSortState.descending)]);
             }
         }
-
         this._syncQuickSortUI();
+
+        // Spaltenstatus
+        const oColsEntry = aData.find(x => x.fieldName === "__COLUMNS__");
+        const aColsState = oColsEntry && oColsEntry.fieldData;
+
+        const applyColumns = function () {
+            if (!Array.isArray(aColsState)) { return; }
+
+            const oTable = this.byId("tblBilling");
+            if (!oTable || !oTable.getColumns) { return; }
+
+            const aCols = oTable.getColumns();
+            if (!aCols || !aCols.length) { return; }
+
+            // map: id -> column
+            const mCols = Object.create(null);
+            aCols.forEach(c => mCols[c.getId()] = c);
+
+            aColsState.forEach(function (cState) {
+            const oCol = mCols[cState.id];
+            if (oCol && typeof cState.visible === "boolean") {
+                oCol.setVisible(cState.visible);
+            }
+            });
+
+            // Optional: falls Popover schon existiert, Checkboxen synchron halten
+            if (this._oColumnPopover && this._oColumnPopover.getContent) {
+            const aContent = this._oColumnPopover.getContent() || [];
+            const oList = aContent[0];
+            if (oList && oList.getItems) {
+                oList.getItems().forEach(function (oCLI, idx) {
+                const oHBox = oCLI.getContent && oCLI.getContent()[0];
+                const oCB = oHBox && oHBox.getItems && oHBox.getItems()[0];
+                const oColumn = aCols[idx];
+                if (oCB && oCB.setSelected && oColumn) {
+                    oCB.setSelected(oColumn.getVisible());
+                }
+                });
+            }
+            }
+        }.bind(this);
+
+        // Timeout (Option 4): falls Table/Columns noch nicht ready sind
+        setTimeout(applyColumns, 0);
         },
 
         //Aktive Filter ermitteln gibt nur die Filter zurück, die aktuell wirklich einen Wert haben
