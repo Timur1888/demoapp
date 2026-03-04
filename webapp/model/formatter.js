@@ -20,6 +20,7 @@ sap.ui.define([
         switch (sMethod) {
             case "ccDM_Email":         return "sap-icon://email";
             case "ccDM_PostalService": return "sap-icon://print";
+            case "ccDM_EGatewayProvider": return "sap-icon://world";
             default:                  return "";
         }
         },

@@ -509,7 +509,7 @@
                             <!-- Transfer Format -->
                             <Text id="txtTransferFormatCell" text="{path: 'backend>MetaData/Object/Data/Basics/TransferFormat',
                                                                     formatter: '.formatter.formatAbbreviations'}" />
-
+                            <!-- Delivery Method -->
                             <ObjectStatus
                                 text="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatAbbreviations'}"
                                 icon="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatDeliveryMethodIcon'}" />

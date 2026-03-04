@@ -332,10 +332,15 @@ sap.ui.define([
             var oBackend = this.getOwnerComponent().getModel("backend");
             oSend.setProperty("/recipient", oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/Recipient/Email/0/Address"));
             //Transfer Format
-            const sBackend = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/TransferFormat"); 
-            const mMap = { "ccBF_PDF": "pdf", "ccBF_XInvoice": "xrechnung", "ccBF_FacturX": "zugferd", "ccBF_Paper": "paper" };// oder Mapping, wenn Backend andere Codes liefert:
-            oSend.setProperty("/transferFormat", mMap[sBackend] || "pdf");
+            const sTransFormat = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/TransferFormat"); 
+            var mMap = { "ccBF_PDF": "pdf", "ccBF_XInvoice": "xrechnung", "ccBF_FacturX": "zugferd", "ccBF_Paper": "paper" };// oder Mapping, wenn Backend andere Codes liefert:
+            oSend.setProperty("/transferFormat", mMap[sTransFormat] || "pdf");
             this._sOldTransferFormat = this.byId("transF").getSelectedItem()?.getText(); //fürs Save den Wert merken
+            //Delivery Method
+            const sDelivMethod = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/DeliveryMethod");
+            mMap = {"ccDM_Email": "email", "ccDM_PostalService": "post", "ccDM_EGatewayProvider": "eGateWay"};
+            oSend.setProperty("/deliveryMethod", mMap[sDelivMethod] || "email")
+            this.sOldDeliveryMethod = this.byId("delMeth").getSelectedItem()?.getText();
             oSend.setProperty("/canSend", true); //Send-Button klickbar machen
 
 
@@ -592,8 +597,21 @@ onSavePanel: async function (saveAfterSend) {
   const sBody    = (oTemplate.getProperty(sBasePath + "/body") || "").trim();
   var sRecipient = (oSend.getProperty("/recipient") || "").trim();
   var sNewRecipient = this.byId("inpRecipient").getValue().trim();
+  var sDeliveryMethod = ("ccDM_" + this.sOldDeliveryMethod).trim();
+  var sNewDeliveryMethod = ("ccDM_" + this.byId("delMeth").getSelectedItem()?.getText()).trim();
   var sTransferFormat = ("ccBF_" + this._sOldTransferFormat).trim();
   var sNewTransferFormat = ("ccBF_" + this.byId("transF").getSelectedItem()?.getText()).trim();
+  
+  if (sRecipient != sNewRecipient){
+    sRecipient = sNewRecipient;
+  }
+
+  if (sDeliveryMethod !== sNewDeliveryMethod){
+    sDeliveryMethod = sNewDeliveryMethod;
+  }
+  if(sDeliveryMethod == "ccBF_Postal Service"){
+    sDeliveryMethod = "ccBF_PostalService"
+  }
 
   if (sTransferFormat !== sNewTransferFormat) {
     // speichern
@@ -606,9 +624,7 @@ onSavePanel: async function (saveAfterSend) {
     sTransferFormat = "ccBF_FacturX"
   }
 
-  if (sRecipient != sNewRecipient){
-    sRecipient = sNewRecipient;
-  }
+
   // ✅ volles Dokument aus Cache holen
   const oDoc = oDocCache?.getProperty("/doc");
   const sCachedId = oDocCache?.getProperty("/docId");
@@ -625,6 +641,7 @@ onSavePanel: async function (saveAfterSend) {
   oFull.MetaData.Object.Data.Subject = sSubject;
   oFull.MetaData.Object.Data.AdditionalInformation = sBody;
   oFull.MetaData.Object.Data.Basics.TransferFormat = sTransferFormat;
+  oFull.MetaData.Object.Data.Basics.deliveryMethod = sDeliveryMethod;
   oFull.MetaData.Object.Data.Basics.Recipient.Email[0].Address = sRecipient;
   //Test
   const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";

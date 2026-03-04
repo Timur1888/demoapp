@@ -80,6 +80,7 @@
                      <!-- Output -->
                      <Title text="Output" level="H4" class="sapUiMediumMarginTop" />
 <VBox class="sapUiSmallMarginTop" width="97%">
+   <Label text="Transfer Format" class="sapUiSmallMarginTop sapUiTinyMarginBottom" />
     <Select id = "transF" width="100%" class="sapUiSmallMarginBottom" selectedKey="{send>/transferFormat}" change=".onValueChange">
         <items>
             <core:Item key="pdf" text="PDF" />
@@ -89,10 +90,12 @@
         </items>
     </Select>
 
-    <Select width="100%" class="sapUiSmallMarginBottom" selectedKey="{send>/deliveryMethod}" change=".onValueChange">
+   <Label text="Delivery Method" class="sapUiSmallMarginTop sapUiTinyMarginBottom" />
+    <Select id = "delMeth" width="100%" class="sapUiSmallMarginBottom" selectedKey="{send>/deliveryMethod}" change=".onValueChange">
         <items>
             <core:Item key="email" text="Email" />
             <core:Item key="post" text="Postal Service" />
+            <core:Item key="eGateWay" text="EGatewayProvider" />
         </items>
     </Select>
 
