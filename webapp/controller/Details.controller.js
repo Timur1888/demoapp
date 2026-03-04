@@ -424,9 +424,10 @@ sap.ui.define([
             return Details_PDFViewHelper.onBlobPageChanged(this, oEvent);
         },
 
-        onClose: function () {
-            return Details_PDFViewHelper.onClose(this);
-        },
+      onClose: function () {
+        const bCanSave = this.getView().getModel("docCache").getProperty("/canSave");
+        return Details_PDFViewHelper.onClose(this, bCanSave);
+      },
 
         // ------------------------------- Uploader -------------------------------
         onInvoiceItemAdded: function (oEvent) {
@@ -670,6 +671,7 @@ onSavePanel: async function (saveAfterSend) {
     if (oSaved && oDocCache) oDocCache.setProperty("/doc", oSaved);
     if (saveAfterSend == false){
       MessageToast.show("Data saved.");
+      oDocCache.setProperty("/canSave", false);
     }
   } catch (e) {
     MessageToast.show(`Save failed: ${e.message || e}`);

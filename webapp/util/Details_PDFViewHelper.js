@@ -234,9 +234,36 @@ sap.ui.define([
       oModel.setProperty("/CurrentInvoice/PdfSource", oItem?.kind === "pdf" ? (oItem?.fileLink || "") : "");
     },
 
+    onClose: function (oController, onSave) {
 
-    onClose: function (oController) {
-      const oRouter = UIComponent.getRouterFor(oController);
+      if (onSave === true) {
+
+        sap.m.MessageBox.confirm(
+          "Are you sure you want to leave without saving?",
+          {
+            title: "Confirm",
+            actions: ["Okay", "Cancel"],
+            onClose: function (sAction) {
+
+              if (sAction === "Okay") {
+
+                const oRouter = sap.ui.core.UIComponent.getRouterFor(oController);
+                oRouter.navTo("RouteView1", {}, true);
+
+                const oMainViewModel = oController.getView().getModel("mainView");
+                if (oMainViewModel) {
+                  oMainViewModel.setProperty("/layout", "OneColumn");
+                }
+
+              }
+            }
+          }
+        );
+
+        return; // verhindert dass Code sofort weiterläuft
+      }
+
+      const oRouter = sap.ui.core.UIComponent.getRouterFor(oController);
       oRouter.navTo("RouteView1", {}, true);
 
       const oMainViewModel = oController.getView().getModel("mainView");
