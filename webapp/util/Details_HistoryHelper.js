@@ -39,8 +39,8 @@ sap.ui.define([], function () {
       if (!sDocId) {
         oHistory.setProperty("/lastDocId", "");
         oHistory.setProperty("/logs", []);
-        oHistory.setProperty("/billingId", "");     // ✅ NEU: reset
-        oHistory.setProperty("/historyDocId", "");  // ✅ optional
+        oHistory.setProperty("/billingId", "");     
+        oHistory.setProperty("/historyDocId", "");  
         return;
       }
 

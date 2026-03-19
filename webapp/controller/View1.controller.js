@@ -667,46 +667,7 @@ sap.ui.define([
     },
 
     onDelete: function (oController) {
-      const oTable         = oController.byId("tblBilling");
-      const aSelectedItems = oTable.getSelectedItems();
-
-      if (!aSelectedItems.length) {
-        return;
-      }
-
-      MessageBox.confirm(
-        `Do you really want to delete ${aSelectedItems.length} item(s)?`,
-        {
-          title: "Confirm Deletion",
-          actions: [MessageBox.Action.DELETE, MessageBox.Action.CANCEL],
-          emphasizedAction: MessageBox.Action.DELETE,
-          onClose: function (sAction) {
-            if (sAction !== MessageBox.Action.DELETE) {
-              return;
-            }
-
-            const oModel = oController.getOwnerComponent().getModel("backend");
-            const aData  = oModel.getProperty("/value") || [];
-
-            const aIndices = aSelectedItems.map(function (oItem) {
-              const oCtx  = oItem.getBindingContext("backend");
-              const sPath = oCtx.getPath(); // z.B. "/value/3"
-              return parseInt(sPath.split("/").pop(), 10);
-            });
-
-            aIndices
-              .sort(function (a, b) { return b - a; })
-              .forEach(function (iIndex) {
-                aData.splice(iIndex, 1);
-              });
-
-            oModel.setProperty("/value", aData);
-
-            oTable.removeSelections(true);
-            oController.byId("btnDelete").setEnabled(false);
-          }
-        }
-      );
+        
     },
     }, View1Helper ));
 });
