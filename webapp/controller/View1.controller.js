@@ -25,7 +25,7 @@ sap.ui.define([
     "sap/m/table/columnmenu/QuickSortItem",
     "demo/app/demoapp/util/View1Helper",
     "sap/m/library",
-], function(
+], function (
 
     Controller,
     UIComponent,
@@ -51,7 +51,7 @@ sap.ui.define([
     Text,
     Sorter,
     QuickSortItem,
-    View1Helper, 
+    View1Helper,
     PlacementType,
 ) {
     "use strict";
@@ -59,9 +59,9 @@ sap.ui.define([
     return Controller.extend("demo.app.demoapp.controller.View1", Object.assign({
 
         formatter: formatter,
-        
 
-        onInit: function() {
+
+        onInit: function () {
             var oView = this.getView();
             //------------Modelle-----------------------
             //Backend-Model
@@ -107,41 +107,41 @@ sap.ui.define([
             this._oSortState = { path: "", descending: false };
 
             this._attachPerColumnMenus().then(() => {
-            this._syncQuickSortUI(); // wenn Variant schon Sort gesetzt hat
+                this._syncQuickSortUI(); // wenn Variant schon Sort gesetzt hat
             });
             this._oSortState = { path: "", descending: false };
             //-----------------------------------------------------
             this._bSvmReady = false;
             this.oSmartVariantManagement.initialise(function () {
-            this._bSvmReady = true;
+                this._bSvmReady = true;
             }.bind(this), this.oFilterBar);
         },
 
         //::::::::::::::::::::::::::::::::::::::::::::::SOTRIERUNG:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         onSortChange: function (oEvent) {
-        const oTable = this.byId("tblBilling");
-        const oBinding = oTable.getBinding("items");
+            const oTable = this.byId("tblBilling");
+            const oBinding = oTable.getBinding("items");
 
-        const oItem = oEvent.getParameter("item"); // QuickSortItem
-        const sPath = oItem.getKey();
-        const sOrder = oItem.getSortOrder();
+            const oItem = oEvent.getParameter("item"); // QuickSortItem
+            const sPath = oItem.getKey();
+            const sOrder = oItem.getSortOrder();
 
-        if (sOrder === "None") {
-            this._oSortState = { path: "", descending: false };
-            oBinding.sort(); // reset
-        } else {
-            const bDesc = (sOrder === "Descending");
-            this._oSortState = { path: sPath, descending: bDesc };
-            oBinding.sort([new Sorter(sPath, bDesc)]);
-        }
+            if (sOrder === "None") {
+                this._oSortState = { path: "", descending: false };
+                oBinding.sort(); // reset
+            } else {
+                const bDesc = (sOrder === "Descending");
+                this._oSortState = { path: sPath, descending: bDesc };
+                oBinding.sort([new Sorter(sPath, bDesc)]);
+            }
 
-        this._syncQuickSortUI();
-        // wichtig: Variante als geändert markieren
-        this.oSmartVariantManagement.currentVariantSetModified(true);
+            this._syncQuickSortUI();
+            // wichtig: Variante als geändert markieren
+            this.oSmartVariantManagement.currentVariantSetModified(true);
         },
         //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::Filter::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //zentrale Funktion, die alle Filter anwendet
-        onSearch: async  function(oEvent) {
+        onSearch: async function (oEvent) {
             var oBackend = this.getOwnerComponent().getModel("backend");
             if (!this._bSvmReady) {
                 return; // nur frühe Init-Searchs blocken
@@ -153,7 +153,7 @@ sap.ui.define([
             const oMainViewModel = this.getView().getModel("mainView");
             if (oMainViewModel) {
                 oMainViewModel.setProperty("/layout", "OneColumn");
-                
+
             }
 
             this.oSmartVariantManagement.currentVariantSetModified(true);
@@ -178,18 +178,18 @@ sap.ui.define([
                     var oAuthModel = this.getOwnerComponent().getModel("auth");
                     // 2) Mehrere Datenquellen parallel laden
                     const [billingResp] = await Promise.all([
-                    fetch(first40BillingsURL, {
-                        method: "GET",
-                        credentials: "include",
-                        headers: {
-                        "Authorization":
-                            (oAuthModel?.getProperty("/tokenType") || "Bearer").trim() + " " + (oAuthModel?.getProperty("/token")).trim()
-                        }
-                    })
+                        fetch(first40BillingsURL, {
+                            method: "GET",
+                            credentials: "include",
+                            headers: {
+                                "Authorization":
+                                    (oAuthModel?.getProperty("/tokenType") || "Bearer").trim() + " " + (oAuthModel?.getProperty("/token")).trim()
+                            }
+                        })
                     ]);
                     if (!billingResp.ok) {
-                    console.error("Billing Request Error:", billingResp.status);
-                    return;
+                        console.error("Billing Request Error:", billingResp.status);
+                        return;
                     }
 
                     const billingJson = await billingResp.json();
@@ -204,13 +204,13 @@ sap.ui.define([
             const sFilter = sUserFilter ? `(${sBaseFilter}) and (${sUserFilter})` : sBaseFilter; //Userfilter leer -> nimm nur Basefilter. Wenn nicht leer, dann nimm beide Filter
 
             await this._loadInvoicesServer({ top: 40, skip: 0, filter: sFilter, append: false });
-            
+
             this.oTable.setShowOverlay(false);
             // 🔔 KEINE TREFFER
             const aRows = this.getOwnerComponent().getModel("backend").getProperty("/value") || [];
             if (aRows.length === 0) {
                 sap.m.MessageToast.show(
-                "No results were found for the specified filters"
+                    "No results were found for the specified filters"
                 );
             }
 
@@ -220,184 +220,184 @@ sap.ui.define([
         // Settings-Button (Spalten ein-/ausblenden)
         // ---------------------------------------------------
         _createColumnSettingsPopover: function () {
-        if (this._oColumnPopover) {
-            return this._oColumnPopover;
-        }
+            if (this._oColumnPopover) {
+                return this._oColumnPopover;
+            }
 
-        const oTable   = this.byId("tblBilling");
-        const aColumns = oTable.getColumns();
+            const oTable = this.byId("tblBilling");
+            const aColumns = oTable.getColumns();
 
-        const oList = new sap.m.List({
-            items: aColumns.map(col => {
-            const sColLabel = col.getHeader().getText();
+            const oList = new sap.m.List({
+                items: aColumns.map(col => {
+                    const sColLabel = col.getHeader().getText();
 
-            return new sap.m.CustomListItem({
-                content: new sap.m.HBox({
-                items: [
-                    new sap.m.CheckBox({
-                    selected: col.getVisible(),
-                    text: sColLabel,
-                    select: function (oEvent) {
-                        col.setVisible(oEvent.getParameter("selected"));
-                        this.oSmartVariantManagement.currentVariantSetModified(true);
-                    }.bind(this)
-                    }).addStyleClass("sapUiSmallMarginEnd")
-                ]
+                    return new sap.m.CustomListItem({
+                        content: new sap.m.HBox({
+                            items: [
+                                new sap.m.CheckBox({
+                                    selected: col.getVisible(),
+                                    text: sColLabel,
+                                    select: function (oEvent) {
+                                        col.setVisible(oEvent.getParameter("selected"));
+                                        this.oSmartVariantManagement.currentVariantSetModified(true);
+                                    }.bind(this)
+                                }).addStyleClass("sapUiSmallMarginEnd")
+                            ]
+                        })
+                    });
                 })
             });
-            })
-        });
 
-        this._oColumnPopover = new sap.m.Popover({
-            placement: sap.m.PlacementType.Auto,   // <= wichtig
-            title: "Columns",
-            contentWidth: "16rem",
-            content: oList
-        });
+            this._oColumnPopover = new sap.m.Popover({
+                placement: sap.m.PlacementType.Auto,   // <= wichtig
+                title: "Columns",
+                contentWidth: "16rem",
+                content: oList
+            });
 
-        this.getView().addDependent(this._oColumnPopover);
-        return this._oColumnPopover;
+            this.getView().addDependent(this._oColumnPopover);
+            return this._oColumnPopover;
         },
 
         onSettings: function (oEvent) {
-        const oButton = oEvent.getSource();
-        const oPop = this._createColumnSettingsPopover();
-        // Toggle: wenn offen -> zu, sonst auf
-        if (oPop.isOpen && oPop.isOpen()) {
-            oPop.close();
-            return;
-        }
-        oPop.openBy(oButton);
+            const oButton = oEvent.getSource();
+            const oPop = this._createColumnSettingsPopover();
+            // Toggle: wenn offen -> zu, sonst auf
+            if (oPop.isOpen && oPop.isOpen()) {
+                oPop.close();
+                return;
+            }
+            oPop.openBy(oButton);
         },
 
         //hole den Filterzusatndustand, der im Variant gespeichert werden soll
         fetchData: function () {
-        const aData = this.oFilterBar.getAllFilterItems().reduce(function (aResult, oFilterItem) {
-            const oControl = oFilterItem.getControl();
-            let vData;
+            const aData = this.oFilterBar.getAllFilterItems().reduce(function (aResult, oFilterItem) {
+                const oControl = oFilterItem.getControl();
+                let vData;
 
-            if (oControl && oControl.getSelectedKeys) {
-            vData = oControl.getSelectedKeys();
-            } else if (oControl && oControl.getValue) {
-            vData = oControl.getValue();
-            } else {
-            vData = null;
-            }
+                if (oControl && oControl.getSelectedKeys) {
+                    vData = oControl.getSelectedKeys();
+                } else if (oControl && oControl.getValue) {
+                    vData = oControl.getValue();
+                } else {
+                    vData = null;
+                }
 
-            aResult.push({
-            groupName: oFilterItem.getGroupName(),
-            fieldName: oFilterItem.getName(),
-            fieldData: vData
+                aResult.push({
+                    groupName: oFilterItem.getGroupName(),
+                    fieldName: oFilterItem.getName(),
+                    fieldData: vData
+                });
+                return aResult;
+            }, []);
+
+            // Sortierung speichern
+            aData.push({
+                groupName: "TABLE",
+                fieldName: "__SORT__",
+                fieldData: this._oSortState // {path:"...", descending:true/false}
             });
-            return aResult;
-        }, []);
 
-        // Sortierung speichern
-        aData.push({
-            groupName: "TABLE",
-            fieldName: "__SORT__",
-            fieldData: this._oSortState // {path:"...", descending:true/false}
-        });
+            // Spaltenstatus speichern
+            const oTable = this.byId("tblBilling");
+            const aColsState = (oTable && oTable.getColumns ? oTable.getColumns() : []).map(function (oCol) {
+                return {
+                    id: oCol.getId(),
+                    visible: oCol.getVisible()
+                };
+            });
 
-        // Spaltenstatus speichern
-        const oTable = this.byId("tblBilling");
-        const aColsState = (oTable && oTable.getColumns ? oTable.getColumns() : []).map(function (oCol) {
-            return {
-            id: oCol.getId(),
-            visible: oCol.getVisible()
-            };
-        });
+            aData.push({
+                groupName: "TABLE",
+                fieldName: "__COLUMNS__",
+                fieldData: aColsState
+            });
 
-        aData.push({
-            groupName: "TABLE",
-            fieldName: "__COLUMNS__",
-            fieldData: aColsState
-        });
-
-        return aData;
+            return aData;
         },
 
 
         //spiele den im Variant gespeicherten Filterzustand wieder ein
         //spiele den im Variant gespeicherten Filterzustand wieder ein
         applyData: function (aData) {
-        // Filter
-        aData.forEach(function (oDataObject) {
-            if (oDataObject.fieldName === "__SORT__" || oDataObject.fieldName === "__COLUMNS__") { return; }
+            // Filter
+            aData.forEach(function (oDataObject) {
+                if (oDataObject.fieldName === "__SORT__" || oDataObject.fieldName === "__COLUMNS__") { return; }
 
-            const oControl = this.oFilterBar.determineControlByName(oDataObject.fieldName, oDataObject.groupName);
-            if (!oControl) { return; }
+                const oControl = this.oFilterBar.determineControlByName(oDataObject.fieldName, oDataObject.groupName);
+                if (!oControl) { return; }
 
-            if (oControl.setSelectedKeys && Array.isArray(oDataObject.fieldData)) {
-            oControl.setSelectedKeys(oDataObject.fieldData);
-            } else if (oControl.setValue && typeof oDataObject.fieldData === "string") {
-            oControl.setValue(oDataObject.fieldData);
-            }
-        }, this);
-
-        // Sort
-        const oSortEntry = aData.find(x => x.fieldName === "__SORT__");
-        const st = oSortEntry && oSortEntry.fieldData;
-        this._oSortState = st || { path: "", descending: false };
-
-        const oBinding = this.byId("tblBilling").getBinding("items");
-        if (oBinding) {
-            if (!this._oSortState.path) {
-            oBinding.sort(); // reset
-            } else {
-            oBinding.sort([new Sorter(this._oSortState.path, !!this._oSortState.descending)]);
-            }
-        }
-        this._syncQuickSortUI();
-
-        // Spaltenstatus
-        const oColsEntry = aData.find(x => x.fieldName === "__COLUMNS__");
-        const aColsState = oColsEntry && oColsEntry.fieldData;
-
-        const applyColumns = function () {
-            if (!Array.isArray(aColsState)) { return; }
-
-            const oTable = this.byId("tblBilling");
-            if (!oTable || !oTable.getColumns) { return; }
-
-            const aCols = oTable.getColumns();
-            if (!aCols || !aCols.length) { return; }
-
-            // map: id -> column
-            const mCols = Object.create(null);
-            aCols.forEach(c => mCols[c.getId()] = c);
-
-            aColsState.forEach(function (cState) {
-            const oCol = mCols[cState.id];
-            if (oCol && typeof cState.visible === "boolean") {
-                oCol.setVisible(cState.visible);
-            }
-            });
-
-            // Optional: falls Popover schon existiert, Checkboxen synchron halten
-            if (this._oColumnPopover && this._oColumnPopover.getContent) {
-            const aContent = this._oColumnPopover.getContent() || [];
-            const oList = aContent[0];
-            if (oList && oList.getItems) {
-                oList.getItems().forEach(function (oCLI, idx) {
-                const oHBox = oCLI.getContent && oCLI.getContent()[0];
-                const oCB = oHBox && oHBox.getItems && oHBox.getItems()[0];
-                const oColumn = aCols[idx];
-                if (oCB && oCB.setSelected && oColumn) {
-                    oCB.setSelected(oColumn.getVisible());
+                if (oControl.setSelectedKeys && Array.isArray(oDataObject.fieldData)) {
+                    oControl.setSelectedKeys(oDataObject.fieldData);
+                } else if (oControl.setValue && typeof oDataObject.fieldData === "string") {
+                    oControl.setValue(oDataObject.fieldData);
                 }
-                });
-            }
-            }
-        }.bind(this);
+            }, this);
 
-        // Timeout (Option 4): falls Table/Columns noch nicht ready sind
-        setTimeout(applyColumns, 0);
+            // Sort
+            const oSortEntry = aData.find(x => x.fieldName === "__SORT__");
+            const st = oSortEntry && oSortEntry.fieldData;
+            this._oSortState = st || { path: "", descending: false };
+
+            const oBinding = this.byId("tblBilling").getBinding("items");
+            if (oBinding) {
+                if (!this._oSortState.path) {
+                    oBinding.sort(); // reset
+                } else {
+                    oBinding.sort([new Sorter(this._oSortState.path, !!this._oSortState.descending)]);
+                }
+            }
+            this._syncQuickSortUI();
+
+            // Spaltenstatus
+            const oColsEntry = aData.find(x => x.fieldName === "__COLUMNS__");
+            const aColsState = oColsEntry && oColsEntry.fieldData;
+
+            const applyColumns = function () {
+                if (!Array.isArray(aColsState)) { return; }
+
+                const oTable = this.byId("tblBilling");
+                if (!oTable || !oTable.getColumns) { return; }
+
+                const aCols = oTable.getColumns();
+                if (!aCols || !aCols.length) { return; }
+
+                // map: id -> column
+                const mCols = Object.create(null);
+                aCols.forEach(c => mCols[c.getId()] = c);
+
+                aColsState.forEach(function (cState) {
+                    const oCol = mCols[cState.id];
+                    if (oCol && typeof cState.visible === "boolean") {
+                        oCol.setVisible(cState.visible);
+                    }
+                });
+
+                // Optional: falls Popover schon existiert, Checkboxen synchron halten
+                if (this._oColumnPopover && this._oColumnPopover.getContent) {
+                    const aContent = this._oColumnPopover.getContent() || [];
+                    const oList = aContent[0];
+                    if (oList && oList.getItems) {
+                        oList.getItems().forEach(function (oCLI, idx) {
+                            const oHBox = oCLI.getContent && oCLI.getContent()[0];
+                            const oCB = oHBox && oHBox.getItems && oHBox.getItems()[0];
+                            const oColumn = aCols[idx];
+                            if (oCB && oCB.setSelected && oColumn) {
+                                oCB.setSelected(oColumn.getVisible());
+                            }
+                        });
+                    }
+                }
+            }.bind(this);
+
+            // Timeout (Option 4): falls Table/Columns noch nicht ready sind
+            setTimeout(applyColumns, 0);
         },
 
         //Aktive Filter ermitteln gibt nur die Filter zurück, die aktuell wirklich einen Wert haben
-        getFiltersWithValues: function() {
-            return this.oFilterBar.getFilterGroupItems().reduce(function(aResult, oFilterGroupItem) {
+        getFiltersWithValues: function () {
+            return this.oFilterBar.getFilterGroupItems().reduce(function (aResult, oFilterGroupItem) {
                 var oControl = oFilterGroupItem.getControl();
 
                 // MultiComboBox / Controls mit SelectedKeys
@@ -419,22 +419,22 @@ sap.ui.define([
 
         // Neuses Filter wurde hinzugefügt: Variant/Labels aktualisieren
         onAddFilter: function (oEvent) {
-        if (this.oSmartVariantManagement?.currentVariantSetModified) {
-            this.oSmartVariantManagement.currentVariantSetModified(true);
-        }
-        if (this.oFilterBar?.fireFilterChange) {
-            this.oFilterBar.fireFilterChange(oEvent || {});
-        }
+            if (this.oSmartVariantManagement?.currentVariantSetModified) {
+                this.oSmartVariantManagement.currentVariantSetModified(true);
+            }
+            if (this.oFilterBar?.fireFilterChange) {
+                this.oFilterBar.fireFilterChange(oEvent || {});
+            }
         },
-        onFilterChange: function() {
+        onFilterChange: function () {
             this._updateLabelsAndTable();
         },
 
-        onAfterVariantLoad: function() {
+        onAfterVariantLoad: function () {
             this._updateLabelsAndTable();
         },
 
-        getFormattedSummaryText: function() {
+        getFormattedSummaryText: function () {
             var aFiltersWithValues = this.oFilterBar.retrieveFiltersWithValues();
 
             if (aFiltersWithValues.length === 0) {
@@ -448,7 +448,7 @@ sap.ui.define([
             return aFiltersWithValues.length + " filters active: " + aFiltersWithValues.join(", ");
         },
 
-        getFormattedSummaryTextExpanded: function() {
+        getFormattedSummaryTextExpanded: function () {
             var aFiltersWithValues = this.oFilterBar.retrieveFiltersWithValues();
 
             if (aFiltersWithValues.length === 0) {
@@ -471,10 +471,10 @@ sap.ui.define([
 
 
         //löscht alle Filter
-        onClearFilters: function(oEvent) {
+        onClearFilters: function (oEvent) {
             // this.getOwnerComponent().getModel("backend").setProperty("/value", []);
 
-            (this.oFilterBar.getFilterGroupItems() || []).forEach(function(oFGI) {
+            (this.oFilterBar.getFilterGroupItems() || []).forEach(function (oFGI) {
                 var oC = oFGI.getControl();
                 if (!oC) {
                     return;
@@ -514,7 +514,7 @@ sap.ui.define([
 
         //-------------------------------------------------------------DateRangeSelection: Factura Date-----------------------------------------
         //wird bei Datumänderung getriggert
-        onFacturaDateChange: function(oEvent) {
+        onFacturaDateChange: function (oEvent) {
             var oDRS = oEvent.getSource();
             var sText = (oDRS.getValue() || "").trim();
 
@@ -528,7 +528,7 @@ sap.ui.define([
             }
 
             // erlaubt: "dd.MM.yyyy - dd.MM.yyyy"
-            var aParts = sText.split("-").map(function(x) {
+            var aParts = sText.split("-").map(function (x) {
                 return x.trim();
             });
 
@@ -572,7 +572,7 @@ sap.ui.define([
             this._closeDRSPopup(oDRS);
         },
 
-        onFacturaDateParseError: function(oEvent) {
+        onFacturaDateParseError: function (oEvent) {
             var oDRS = oEvent.getSource();
             oDRS.setValueState(sap.ui.core.ValueState.Error);
             oDRS.setValueStateText("Invalid date format. Use dd.MM.yyyy - dd.MM.yyyy.");
@@ -581,7 +581,7 @@ sap.ui.define([
         //::::::::::::::::::::::::::::::::::::::::::::::::::::Allgemeine Funktionen für dieses View::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         //Beim App-Verlassen löscht alle Abhängigkeiten/Cache
-        onExit: function() {
+        onExit: function () {
             // 1) Binding detach (ValueHelp rebuild)
             if (this._oItemsBinding && this._fnItemsBindingChange) {
                 this._oItemsBinding.detachChange(this._fnItemsBindingChange);
@@ -591,10 +591,10 @@ sap.ui.define([
 
             // 2) Column header menus destroyen (pro Spalte geladene Fragmente)
             if (Array.isArray(this._aColumnMenus)) {
-                this._aColumnMenus.forEach(function(oMenu) {
+                this._aColumnMenus.forEach(function (oMenu) {
                     try {
                         oMenu && oMenu.destroy();
-                    } catch (e) {}
+                    } catch (e) { }
                 });
             }
             this._aColumnMenus = null;
@@ -603,7 +603,7 @@ sap.ui.define([
             if (this._oColumnMenu) {
                 try {
                     this._oColumnMenu.destroy();
-                } catch (e) {}
+                } catch (e) { }
             }
             this._oColumnMenu = null;
 
@@ -611,14 +611,14 @@ sap.ui.define([
             if (this._oVHD) {
                 try {
                     this._oVHD.destroy();
-                } catch (e) {}
+                } catch (e) { }
             }
             this._oVHD = null;
 
             if (this._oBasicSearchField) {
                 try {
                     this._oBasicSearchField.destroy();
-                } catch (e) {}
+                } catch (e) { }
             }
             this._oBasicSearchField = null;
 
@@ -632,7 +632,7 @@ sap.ui.define([
         },
 
         // Navigation zur Detailseite
-        onInvoicePress: function(oEvent) {
+        onInvoicePress: function (oEvent) {
             const oItem = oEvent.getParameter("listItem");
             const oCtx = oItem.getBindingContext("backend");
 
@@ -653,22 +653,22 @@ sap.ui.define([
             });
         },
 
-    // ---------------------------------------------------
-    // Löschen
-    // ---------------------------------------------------
-    onSelectionChange: function (oController, oEvent) {
-      const oTable        = oEvent.getSource();
-      const aSelected     = oTable.getSelectedItems();
-      const oDeleteButton = oController.byId("btnDelete");
+        // ---------------------------------------------------
+        // Löschen
+        // ---------------------------------------------------
+        onSelectionChange: function (oController, oEvent) {
+            const oTable = oEvent.getSource();
+            const aSelected = oTable.getSelectedItems();
+            const oDeleteButton = oController.byId("btnDelete");
 
-      if (oDeleteButton) {
-        oDeleteButton.setEnabled(aSelected.length > 0);
-      }
-    },
+            if (oDeleteButton) {
+                oDeleteButton.setEnabled(aSelected.length > 0);
+            }
+        },
 
-    onDelete: function (oController) {
-        
-    },
-    }, View1Helper ));
+        onDelete: function (oController) {
+
+        },
+    }, View1Helper));
 });
 

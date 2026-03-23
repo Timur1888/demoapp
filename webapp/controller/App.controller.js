@@ -5,8 +5,8 @@ sap.ui.define([
   "use strict";
 
   return BaseController.extend("demo.app.demoapp.controller.App", {
-      onInit() {
-        
+    onInit() {
+
       const oViewModel = new JSONModel({
         layout: "OneColumn",
         openDetailsOnMatch: false
@@ -15,6 +15,6 @@ sap.ui.define([
       // Modell auf App-View setzen, wird zu Kind-Views (View1, Details) durchgereicht
       this.getView().setModel(oViewModel, "mainView");
 
-      }
+    }
   });
 });

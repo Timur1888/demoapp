@@ -82,7 +82,7 @@ sap.ui.define([
       this.getView().getModel("docCache").setProperty("/canSave", true);
     },
 
-        // ------------------------------- Edit Templates -------------------------------
+    // ------------------------------- Edit Templates -------------------------------
     _ensureTemplateForInvoice: function (sInvoiceKey) {
       var oModel = this.getView().getModel("template");
       sInvoiceKey = String(sInvoiceKey || "").trim();   // ✅ WICHTIG
@@ -103,7 +103,7 @@ sap.ui.define([
       }
     },
 
-        _getCurrentTemplatePath: function () {
+    _getCurrentTemplatePath: function () {
       var oModel = this.getView().getModel("template");
       var sKey = oModel?.getProperty("/currentInvoiceKey");
       return sKey ? ("/invoices/" + sKey) : null;
@@ -125,7 +125,7 @@ sap.ui.define([
         oDialog.bindElement({ path: sPath, model: "template" });
       }
     },
-    
+
 
     onOpenTemplateDialog: function () {
       var oView = this.getView();
@@ -261,90 +261,90 @@ sap.ui.define([
         .replace(/'/g, "&#39;");
     },
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        // ==========================================================
-        // Panel komplett neu wenn User eine Rechnung selektiert
-        // ==========================================================
-        _resetDetailsUI: function () {
-          // Tab immer auf Overview
-          this.byId("itbDetails")?.setSelectedKey("overview");
+    //------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // ==========================================================
+    // Panel komplett neu wenn User eine Rechnung selektiert
+    // ==========================================================
+    _resetDetailsUI: function () {
+      // Tab immer auf Overview
+      this.byId("itbDetails")?.setSelectedKey("overview");
 
-          // Scroll nach oben (IDs wie besprochen)
-          this.byId("scOverview")?.scrollTo(0, 0, 0);
-          this.byId("scHistory")?.scrollTo(0, 0, 0);
-          this.byId("detailsPage")?.scrollTo(0, 0, 0);
-        },
-        _onRouteMatched: function (oEvent) {
-            const oMain = this.getView().getModel("mainView");
-            const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+      // Scroll nach oben (IDs wie besprochen)
+      this.byId("scOverview")?.scrollTo(0, 0, 0);
+      this.byId("scHistory")?.scrollTo(0, 0, 0);
+      this.byId("detailsPage")?.scrollTo(0, 0, 0);
+    },
+    _onRouteMatched: function (oEvent) {
+      const oMain = this.getView().getModel("mainView");
+      const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
 
-            // Reload / direkter Einstieg: Details NICHT öffnen, sondern zurück zur Liste
-            if (oMain && !oMain.getProperty("/openDetailsOnMatch")) {
-              oMain.setProperty("/layout", "OneColumn");
-              oRouter.navTo("RouteView1", {}, true);
-              return;
-            }
+      // Reload / direkter Einstieg: Details NICHT öffnen, sondern zurück zur Liste
+      if (oMain && !oMain.getProperty("/openDetailsOnMatch")) {
+        oMain.setProperty("/layout", "OneColumn");
+        oRouter.navTo("RouteView1", {}, true);
+        return;
+      }
 
-            // Normale Navigation aus View1: Details darf aufgehen
-            if (oMain) {
-              oMain.setProperty("/layout", "TwoColumnsBeginExpanded");
-              oMain.setProperty("/openDetailsOnMatch", false);
-            }
+      // Normale Navigation aus View1: Details darf aufgehen
+      if (oMain) {
+        oMain.setProperty("/layout", "TwoColumnsBeginExpanded");
+        oMain.setProperty("/openDetailsOnMatch", false);
+      }
 
-            requestAnimationFrame(() => this._resetDetailsUI());
-            
-            const oModel = this.getOwnerComponent().getModel("backend");
-            if (!oModel) {
-                console.error("Model 'backend' nicht gefunden");
-                return;
-            }
-            this.getView().getModel("docCache").setProperty("/canSave", false);
-            const sInvoiceId =  String(oEvent.getParameter("arguments").invoiceId).trim();
+      requestAnimationFrame(() => this._resetDetailsUI());
 
-            const aInvoices = oModel.getProperty("/value") || [];
-            const sWanted = String(sInvoiceId || "").trim();
+      const oModel = this.getOwnerComponent().getModel("backend");
+      if (!oModel) {
+        console.error("Model 'backend' nicht gefunden");
+        return;
+      }
+      this.getView().getModel("docCache").setProperty("/canSave", false);
+      const sInvoiceId = String(oEvent.getParameter("arguments").invoiceId).trim();
 
-            let oInvoice = aInvoices.find(function (o) {
-                const v = o?.MetaData?.Object?.Data?.Basics?.Number?.Value;
-                return String(v ?? "").trim() === sWanted;
-            });
+      const aInvoices = oModel.getProperty("/value") || [];
+      const sWanted = String(sInvoiceId || "").trim();
 
-            if (!oInvoice) {
-                oInvoice = aInvoices.find(function (o) {
-                    return String(o?.Id ?? "").trim() === sWanted;
-                });
-            }
+      let oInvoice = aInvoices.find(function (o) {
+        const v = o?.MetaData?.Object?.Data?.Basics?.Number?.Value;
+        return String(v ?? "").trim() === sWanted;
+      });
 
-            if (!oInvoice) {
-                console.warn("Keine Rechnung mit ID", sInvoiceId, "gefunden");
-                return;
-            }
+      if (!oInvoice) {
+        oInvoice = aInvoices.find(function (o) {
+          return String(o?.Id ?? "").trim() === sWanted;
+        });
+      }
 
-            oModel.setProperty("/CurrentInvoice", oInvoice);
+      if (!oInvoice) {
+        console.warn("Keine Rechnung mit ID", sInvoiceId, "gefunden");
+        return;
+      }
 
-            this.getView().bindElement({
-                path: "/CurrentInvoice",
-                model: "backend"
-            });
+      oModel.setProperty("/CurrentInvoice", oInvoice);
 
-            // Recipient name aus Backend holen
-            var oSend = this.getView().getModel("send");
-            var oBackend = this.getOwnerComponent().getModel("backend");
-            oSend.setProperty("/recipient", oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/Recipient/Email/0/Address"));
-            //Transfer Format
-            const sTransFormat = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/TransferFormat"); 
-            var mMap = { "ccBF_PDF": "pdf", "ccBF_XInvoice": "xrechnung", "ccBF_FacturX": "zugferd", "ccBF_Paper": "paper" };// oder Mapping, wenn Backend andere Codes liefert:
-            oSend.setProperty("/transferFormat", mMap[sTransFormat] || "pdf");
-            this._sOldTransferFormat = this.byId("transF").getSelectedItem()?.getText(); //fürs Save den Wert merken
-            //Delivery Method
-            const sDelivMethod = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/DeliveryMethod");
-            mMap = {"ccDM_Email": "email", "ccDM_PostalService": "post", "ccDM_EGatewayProvider": "eGateWay"};
-            oSend.setProperty("/deliveryMethod", mMap[sDelivMethod] || "email")
-            this.sOldDeliveryMethod = this.byId("delMeth").getSelectedItem()?.getText();
-            oSend.setProperty("/canSend", true); //Send-Button klickbar machen
+      this.getView().bindElement({
+        path: "/CurrentInvoice",
+        model: "backend"
+      });
+
+      // Recipient name aus Backend holen
+      var oSend = this.getView().getModel("send");
+      var oBackend = this.getOwnerComponent().getModel("backend");
+      oSend.setProperty("/recipient", oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/Recipient/Email/0/Address"));
+      //Transfer Format
+      const sTransFormat = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/TransferFormat");
+      var mMap = { "ccBF_PDF": "pdf", "ccBF_XInvoice": "xrechnung", "ccBF_FacturX": "zugferd", "ccBF_Paper": "paper" };// oder Mapping, wenn Backend andere Codes liefert:
+      oSend.setProperty("/transferFormat", mMap[sTransFormat] || "pdf");
+      this._sOldTransferFormat = this.byId("transF").getSelectedItem()?.getText(); //fürs Save den Wert merken
+      //Delivery Method
+      const sDelivMethod = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/DeliveryMethod");
+      mMap = { "ccDM_Email": "email", "ccDM_PostalService": "post", "ccDM_EGatewayProvider": "eGateWay" };
+      oSend.setProperty("/deliveryMethod", mMap[sDelivMethod] || "email")
+      this.sOldDeliveryMethod = this.byId("delMeth").getSelectedItem()?.getText();
+      oSend.setProperty("/canSend", true); //Send-Button klickbar machen
 
 
-            //Template an die Rechnung binden
+      //Template an die Rechnung binden
       if (sInvoiceId) {
         this._ensureTemplateForInvoice(sInvoiceId);
         this._bindTemplateContexts(); // Panel + Dialog auf diese Rechnung binden
@@ -362,324 +362,324 @@ sap.ui.define([
       this._rebuildLists();
     },
 
-        // ==========================================================
-        // Refresht NUR Overview (Preview/Carousel) zur Laufzeit
-        // ==========================================================
-        _refreshPanel: function () {
-            const oBackend = this.getOwnerComponent().getModel("backend");
-            const oInvoice = oBackend?.getProperty("/CurrentInvoice");
-            if (!oInvoice) { return; }
+    // ==========================================================
+    // Refresht NUR Overview (Preview/Carousel) zur Laufzeit
+    // ==========================================================
+    _refreshPanel: function () {
+      const oBackend = this.getOwnerComponent().getModel("backend");
+      const oInvoice = oBackend?.getProperty("/CurrentInvoice");
+      if (!oInvoice) { return; }
 
-            // OVERVIEW: Preview / Carousel aktualisieren
-            this._preparePdfSourceFromInvoice(oInvoice);
+      // OVERVIEW: Preview / Carousel aktualisieren
+      this._preparePdfSourceFromInvoice(oInvoice);
 
-            const oCarousel = this.byId("blobCarousel");
-            if (oCarousel) {
-                const oBind = oCarousel.getBinding("pages");
-                if (oBind && oBind.refresh) {
-                    oBind.refresh(true);
-                }
-                oCarousel.invalidate();
-            }
-        },
+      const oCarousel = this.byId("blobCarousel");
+      if (oCarousel) {
+        const oBind = oCarousel.getBinding("pages");
+        if (oBind && oBind.refresh) {
+          oBind.refresh(true);
+        }
+        oCarousel.invalidate();
+      }
+    },
 
-        
-        // HISTORY: Tab Select -> sicherstellen, dass Logs da sind, man braucht das dafür, dass die Logs aktualisiert werden, selbst wenn Panel nicht neu geöffnet wird
-        onIconTabSelect: function (oEvent) {
-            const sKey = oEvent.getParameter("key");
-            if (sKey === "history") {
-                // ✅ Beim Klick auf History nochmal sicher laden (cached -> kein Doppelcall)
-                this._loadHistoryLogs();
-            }
-            // Wenn du im Helper noch andere Logik hast (z.B. scroll), kannst du ihn trotzdem callen:
-            // return Details_HistoryHelper.onIconTabSelect(this, oEvent);
-        },
 
-        _loadHistoryLogs: function (bForce) {
-        return Details_HistoryHelper.loadHistoryLogs(this, !!bForce);
-        },
+    // HISTORY: Tab Select -> sicherstellen, dass Logs da sind, man braucht das dafür, dass die Logs aktualisiert werden, selbst wenn Panel nicht neu geöffnet wird
+    onIconTabSelect: function (oEvent) {
+      const sKey = oEvent.getParameter("key");
+      if (sKey === "history") {
+        // ✅ Beim Klick auf History nochmal sicher laden (cached -> kein Doppelcall)
+        this._loadHistoryLogs();
+      }
+      // Wenn du im Helper noch andere Logik hast (z.B. scroll), kannst du ihn trotzdem callen:
+      // return Details_HistoryHelper.onIconTabSelect(this, oEvent);
+    },
 
-        _mapHistoryStatus: function (sDocState, sLogType, sCode, sMsg) {
-            return Details_HistoryHelper.mapHistoryStatus(sDocState, sLogType, sCode, sMsg);
-        },
+    _loadHistoryLogs: function (bForce) {
+      return Details_HistoryHelper.loadHistoryLogs(this, !!bForce);
+    },
 
-        formatHistoryMeta: function (dDate, sCode) {
-            return Details_HistoryHelper.formatHistoryMeta(dDate, sCode);
-        },
+    _mapHistoryStatus: function (sDocState, sLogType, sCode, sMsg) {
+      return Details_HistoryHelper.mapHistoryStatus(sDocState, sLogType, sCode, sMsg);
+    },
 
-        // ------------------------------- PDF anzeigen -------------------------------
-        _preparePdfSourceFromInvoice: function (oInvoice) {
-            return Details_PDFViewHelper.preparePdfSourceFromInvoice(this, oInvoice);
-        },
+    formatHistoryMeta: function (dDate, sCode) {
+      return Details_HistoryHelper.formatHistoryMeta(dDate, sCode);
+    },
 
-        onPdfPress: function () {
-            return Details_PDFViewHelper.onPdfPress(this);
-        },
+    // ------------------------------- PDF anzeigen -------------------------------
+    _preparePdfSourceFromInvoice: function (oInvoice) {
+      return Details_PDFViewHelper.preparePdfSourceFromInvoice(this, oInvoice);
+    },
 
-        onFilePress: function () {
-            return Details_PDFViewHelper.onFilePress(this);
-        },
+    onPdfPress: function () {
+      return Details_PDFViewHelper.onPdfPress(this);
+    },
 
-        onBlobPageChanged: function (oEvent) {
-            return Details_PDFViewHelper.onBlobPageChanged(this, oEvent);
-        },
+    onFilePress: function () {
+      return Details_PDFViewHelper.onFilePress(this);
+    },
 
-      onClose: function () {
-        const bCanSave = this.getView().getModel("docCache").getProperty("/canSave");
-        return Details_PDFViewHelper.onClose(this, bCanSave);
-      },
+    onBlobPageChanged: function (oEvent) {
+      return Details_PDFViewHelper.onBlobPageChanged(this, oEvent);
+    },
 
-        // ------------------------------- Uploader -------------------------------
-        onInvoiceItemAdded: function (oEvent) {
-            return Details_FilesUpload.onInvoiceItemAdded(this, oEvent);
-        },
+    onClose: function () {
+      const bCanSave = this.getView().getModel("docCache").getProperty("/canSave");
+      return Details_PDFViewHelper.onClose(this, bCanSave);
+    },
 
-        onAttachmentItemAdded: function (oEvent) {
-            return Details_FilesUpload.onAttachmentItemAdded(this, oEvent);
-        },
+    // ------------------------------- Uploader -------------------------------
+    onInvoiceItemAdded: function (oEvent) {
+      return Details_FilesUpload.onInvoiceItemAdded(this, oEvent);
+    },
 
-        onAfterInvoiceItemRemoved: function (oEvent) {
-            return Details_FilesUpload.onAfterInvoiceItemRemoved(this, oEvent);
-        },
+    onAttachmentItemAdded: function (oEvent) {
+      return Details_FilesUpload.onAttachmentItemAdded(this, oEvent);
+    },
 
-        onAfterAttachmentItemRemoved: function (oEvent) {
-            return Details_FilesUpload.onAfterAttachmentItemRemoved(this, oEvent);
-        },
+    onAfterInvoiceItemRemoved: function (oEvent) {
+      return Details_FilesUpload.onAfterInvoiceItemRemoved(this, oEvent);
+    },
 
-        _rebuildLists: function () {
-            return Details_FilesUpload.rebuildLists(this);
-        },
+    onAfterAttachmentItemRemoved: function (oEvent) {
+      return Details_FilesUpload.onAfterAttachmentItemRemoved(this, oEvent);
+    },
 
-        _getCurrentDocumentId: function () {
-            return Details_FilesUpload.getCurrentDocumentId(this);
-        },
+    _rebuildLists: function () {
+      return Details_FilesUpload.rebuildLists(this);
+    },
 
-        onBrowseInvoice: function () {
-            return Details_FilesUpload.onBrowseInvoice(this);
-        },
+    _getCurrentDocumentId: function () {
+      return Details_FilesUpload.getCurrentDocumentId(this);
+    },
 
-        _wireUploadSetItemPress: function (sUploadSetId) {
-            return Details_FilesUpload.wireUploadSetItemPress(this, sUploadSetId);
-        },
-//---------------------------------------------------------------------------------------------Senden------------------------------------------------------------------------------------------------------
-onSendInvoice: async function () {
-  const oView    = this.getView();
-  const oSend    = oView.getModel("send");
-  const oAuth    = this.getOwnerComponent().getModel("auth");
-  const oHistory = oView.getModel("history");
-  const oModel   = this.getOwnerComponent().getModel("backend");
-  const oTemplate = oView.getModel("template");
+    onBrowseInvoice: function () {
+      return Details_FilesUpload.onBrowseInvoice(this);
+    },
 
-    // Button sofort ausgrauen
-  oSend.setProperty("/canSend", false);
-  // ---------------------------
-  // Helper: String → [{Address}]
-  // ---------------------------
-  const fnToAddressArray = (s) =>
-    (s || "")
-      .split(",")
-      .map(x => x.trim())
-      .filter(Boolean)
-      .map(addr => ({ Address: addr }));   // ✅ NUR Address
+    _wireUploadSetItemPress: function (sUploadSetId) {
+      return Details_FilesUpload.wireUploadSetItemPress(this, sUploadSetId);
+    },
+    //---------------------------------------------------------------------------------------------Senden------------------------------------------------------------------------------------------------------
+    onSendInvoice: async function () {
+      const oView = this.getView();
+      const oSend = oView.getModel("send");
+      const oAuth = this.getOwnerComponent().getModel("auth");
+      const oHistory = oView.getModel("history");
+      const oModel = this.getOwnerComponent().getModel("backend");
+      const oTemplate = oView.getModel("template");
 
-  // 1) Werte aus UI
-  const sRecipient = (oSend?.getProperty("/recipient") || "").trim();
-  const sCc        = (oSend?.getProperty("/cc") || "").trim();
-  const sBcc       = (oSend?.getProperty("/bcc") || "").trim();
+      // Button sofort ausgrauen
+      oSend.setProperty("/canSend", false);
+      // ---------------------------
+      // Helper: String → [{Address}]
+      // ---------------------------
+      const fnToAddressArray = (s) =>
+        (s || "")
+          .split(",")
+          .map(x => x.trim())
+          .filter(Boolean)
+          .map(addr => ({ Address: addr }));   // ✅ NUR Address
 
-  if (!sRecipient) {
-    sap.m.MessageBox.warning("Please enter a Receiver email.");
-    return;
-  }
+      // 1) Werte aus UI
+      const sRecipient = (oSend?.getProperty("/recipient") || "").trim();
+      const sCc = (oSend?.getProperty("/cc") || "").trim();
+      const sBcc = (oSend?.getProperty("/bcc") || "").trim();
 
-  const sDocHubItemId = (oModel?.getProperty("/CurrentInvoice/Id") || "").trim();
-  if (!sDocHubItemId) {
-    sap.m.MessageBox.error("No document selected (DocHubItemId is empty).");
-    return;
-  }
+      if (!sRecipient) {
+        sap.m.MessageBox.warning("Please enter a Receiver email.");
+        return;
+      }
 
-  // BillingId aus history-Model
-  let sBillingId = (oHistory?.getProperty("/billingId") || "").trim();
-  if (!sBillingId && typeof this._loadHistoryLogs === "function") {
-    await this._loadHistoryLogs(true);
-    sBillingId = (oHistory?.getProperty("/billingId") || "").trim();
-  }
+      const sDocHubItemId = (oModel?.getProperty("/CurrentInvoice/Id") || "").trim();
+      if (!sDocHubItemId) {
+        sap.m.MessageBox.error("No document selected (DocHubItemId is empty).");
+        return;
+      }
 
-  if (!sBillingId) {
-    sap.m.MessageBox.error("Billing Id not found.");
-    return;
-  }
+      // BillingId aus history-Model
+      let sBillingId = (oHistory?.getProperty("/billingId") || "").trim();
+      if (!sBillingId && typeof this._loadHistoryLogs === "function") {
+        await this._loadHistoryLogs(true);
+        sBillingId = (oHistory?.getProperty("/billingId") || "").trim();
+      }
 
-  // Token
-  const sType = (oAuth?.getProperty("/tokenType") || "Bearer").trim();
-  const sTok  = (oAuth?.getProperty("/token") || "").trim();
-  if (!sTok) {
-    sap.m.MessageBox.error("No auth token found.");
-    return;
-  }
+      if (!sBillingId) {
+        sap.m.MessageBox.error("Billing Id not found.");
+        return;
+      }
 
-  // ---------------------------
-  // Payload (ohne Email/Value)
-  // ---------------------------
-  const oPayload = {
-    DocHubItemId: sDocHubItemId,
-    Recipients: fnToAddressArray(sRecipient), // ✅ nur Address
-    Cc: fnToAddressArray(sCc),
-    Bcc: fnToAddressArray(sBcc),
-    Subject: oTemplate.getProperty("/invoices/" + oTemplate.getProperty("/currentInvoiceKey") + "/subject"),
-    Body: oTemplate.getProperty("/invoices/" + oTemplate.getProperty("/currentInvoiceKey") + "/body") 
-  };
+      // Token
+      const sType = (oAuth?.getProperty("/tokenType") || "Bearer").trim();
+      const sTok = (oAuth?.getProperty("/token") || "").trim();
+      if (!sTok) {
+        sap.m.MessageBox.error("No auth token found.");
+        return;
+      }
 
-  if (!oPayload.Recipients.length) {
-    sap.m.MessageBox.error("At least one recipient is required.");
-    return;
-  }
+      // ---------------------------
+      // Payload (ohne Email/Value)
+      // ---------------------------
+      const oPayload = {
+        DocHubItemId: sDocHubItemId,
+        Recipients: fnToAddressArray(sRecipient), // ✅ nur Address
+        Cc: fnToAddressArray(sCc),
+        Bcc: fnToAddressArray(sBcc),
+        Subject: oTemplate.getProperty("/invoices/" + oTemplate.getProperty("/currentInvoiceKey") + "/subject"),
+        Body: oTemplate.getProperty("/invoices/" + oTemplate.getProperty("/currentInvoiceKey") + "/body")
+      };
 
-  //Test
-  const sUrl =
-    `https://test.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
-  //cci001
-  // const sUrl =
-    // `https://cci001.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
-  try {
-    oView.setBusy(true);
+      if (!oPayload.Recipients.length) {
+        sap.m.MessageBox.error("At least one recipient is required.");
+        return;
+      }
 
-    const oResp = await fetch(sUrl, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
+      //Test
+      const sUrl =
+        `https://test.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
+      //cci001
+      // const sUrl =
+      // `https://cci001.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
+      try {
+        oView.setBusy(true);
+
+        const oResp = await fetch(sUrl, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `${sType} ${sTok}`
+          },
+          body: JSON.stringify(oPayload)
+        });
+
+        const sText = await oResp.text();
+        if (!oResp.ok) {
+          sap.m.MessageBox.error(`Send failed (${oResp.status}): ${sText}`);
+          return;
+        }
+
+        sap.m.MessageToast.show("Invoice sent successfully.");
+
+        this.onSavePanel(true);
+
+      } catch (e) {
+        oSend.setProperty("/canSend", true);
+        sap.m.MessageBox.error(`Send failed: ${e?.message || e}`);
+      } finally {
+        oView.setBusy(false);
+      }
+    },
+
+    //----------------------------------------------------------------------------------------------------Save-Button-----------------------------------------------------------------
+    onPressSave: function () {
+      this.onSavePanel(false);
+    },
+    onSavePanel: async function (saveAfterSend) {
+      const oAuth = this.getOwnerComponent().getModel("auth");
+      const oTemplate = this.getView().getModel("template");
+      const oDocCache = this.getView().getModel("docCache");
+      const oSend = this.getView().getModel("send");
+
+      const sType = oAuth?.getProperty("/tokenType");
+      const sTok = oAuth?.getProperty("/token");
+      const sDocId = this._getCurrentDocumentId?.();
+
+      if (!sTok || !sDocId || !oTemplate) { /* deine Toasts */ return; }
+
+      // Template Werte
+      const sKey = String(oTemplate.getProperty("/currentInvoiceKey") || "").trim();
+      const sBasePath = sKey ? ("/invoices/" + sKey) : null;
+      if (!sBasePath) { MessageToast.show("No current invoice key."); return; }
+
+      const sSubject = (oTemplate.getProperty(sBasePath + "/subject") || "").trim();
+      const sBody = (oTemplate.getProperty(sBasePath + "/body") || "").trim();
+      var sRecipient = (oSend.getProperty("/recipient") || "").trim();
+      var sNewRecipient = this.byId("inpRecipient").getValue().trim();
+      var sDeliveryMethod = ("ccDM_" + this.sOldDeliveryMethod).trim();
+      var sNewDeliveryMethod = ("ccDM_" + this.byId("delMeth").getSelectedItem()?.getText()).trim();
+      var sTransferFormat = ("ccBF_" + this._sOldTransferFormat).trim();
+      var sNewTransferFormat = ("ccBF_" + this.byId("transF").getSelectedItem()?.getText()).trim();
+
+      if (sRecipient != sNewRecipient) {
+        sRecipient = sNewRecipient;
+      }
+
+      if (sDeliveryMethod !== sNewDeliveryMethod) {
+        sDeliveryMethod = sNewDeliveryMethod;
+      }
+      if (sDeliveryMethod == "ccBF_Postal Service") {
+        sDeliveryMethod = "ccBF_PostalService"
+      }
+
+      if (sTransferFormat !== sNewTransferFormat) {
+        // speichern
+        sTransferFormat = sNewTransferFormat; // optional nach Save aktualisieren
+      }
+      if (sTransferFormat == "ccBF_XRechnung") {
+        sTransferFormat = "ccBF_XInvoice"
+      }
+      if (sTransferFormat == "ccBF_ZUGFeRD") {
+        sTransferFormat = "ccBF_FacturX"
+      }
+
+
+      // ✅ volles Dokument aus Cache holen
+      const oDoc = oDocCache?.getProperty("/doc");
+      const sCachedId = oDocCache?.getProperty("/docId");
+      if (!oDoc || sCachedId !== sDocId) {
+        MessageToast.show("Document not loaded yet. Please reload and try again.");
+        return;
+      }
+
+      // ✅ Deep copy, dann Werte setzen backend>MetaData/Object/Data/Basics/Recipient/Email/0/Address
+      const oFull = JSON.parse(JSON.stringify(oDoc));
+      oFull.MetaData ??= {};
+      oFull.MetaData.Object ??= {};
+      oFull.MetaData.Object.Data ??= {};
+      oFull.MetaData.Object.Data.Subject = sSubject;
+      oFull.MetaData.Object.Data.AdditionalInformation = sBody;
+      oFull.MetaData.Object.Data.Basics.TransferFormat = sTransferFormat;
+      oFull.MetaData.Object.Data.Basics.deliveryMethod = sDeliveryMethod;
+      oFull.MetaData.Object.Data.Basics.Recipient.Email[0].Address = sRecipient;
+      //Test
+      const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
+      //cci001
+      // const sBase = "https://cci001.app.clarc.com:443/application/api/v1/documenthub";
+      const sUrl1 = `${sBase}/document(${encodeURIComponent(sDocId)})`;
+      const sUrl2 = `${sBase}/document/${encodeURIComponent(sDocId)}`;
+
+      const oHeaders = {
+        "Authorization": `${sType} ${sTok}`,
         "Accept": "application/json",
-        "Authorization": `${sType} ${sTok}`
-      },
-      body: JSON.stringify(oPayload)
-    });
+        "Content-Type": "application/json"
+      };
 
-    const sText = await oResp.text();
-    if (!oResp.ok) {
-      sap.m.MessageBox.error(`Send failed (${oResp.status}): ${sText}`);
-      return;
-    }
+      try {
+        let r = await fetch(sUrl1, { method: "PUT", headers: oHeaders, body: JSON.stringify(oFull) });
+        if (!r.ok) r = await fetch(sUrl2, { method: "PUT", headers: oHeaders, body: JSON.stringify(oFull) });
 
-    sap.m.MessageToast.show("Invoice sent successfully.");
+        if (!r.ok) {
+          const t = await r.text().catch(() => "");
+          throw new Error(`HTTP ${r.status} ${r.statusText}${t ? " - " + t : ""}`);
+        }
 
-    this.onSavePanel(true);
-
-  } catch (e) {
-    oSend.setProperty("/canSend", true);
-    sap.m.MessageBox.error(`Send failed: ${e?.message || e}`);
-  } finally {
-    oView.setBusy(false);
-  }
-},
-
-//----------------------------------------------------------------------------------------------------Save-Button-----------------------------------------------------------------
-onPressSave: function () {
-    this.onSavePanel(false);  
-},
-onSavePanel: async function (saveAfterSend) {
-  const oAuth = this.getOwnerComponent().getModel("auth");
-  const oTemplate = this.getView().getModel("template");
-  const oDocCache = this.getView().getModel("docCache");
-  const oSend = this.getView().getModel("send");
-
-  const sType = oAuth?.getProperty("/tokenType");
-  const sTok  = oAuth?.getProperty("/token");
-  const sDocId = this._getCurrentDocumentId?.();
-
-  if (!sTok || !sDocId || !oTemplate) { /* deine Toasts */ return; }
-
-  // Template Werte
-  const sKey = String(oTemplate.getProperty("/currentInvoiceKey") || "").trim();
-  const sBasePath = sKey ? ("/invoices/" + sKey) : null;
-  if (!sBasePath) { MessageToast.show("No current invoice key."); return; }
-
-  const sSubject = (oTemplate.getProperty(sBasePath + "/subject") || "").trim();
-  const sBody    = (oTemplate.getProperty(sBasePath + "/body") || "").trim();
-  var sRecipient = (oSend.getProperty("/recipient") || "").trim();
-  var sNewRecipient = this.byId("inpRecipient").getValue().trim();
-  var sDeliveryMethod = ("ccDM_" + this.sOldDeliveryMethod).trim();
-  var sNewDeliveryMethod = ("ccDM_" + this.byId("delMeth").getSelectedItem()?.getText()).trim();
-  var sTransferFormat = ("ccBF_" + this._sOldTransferFormat).trim();
-  var sNewTransferFormat = ("ccBF_" + this.byId("transF").getSelectedItem()?.getText()).trim();
-  
-  if (sRecipient != sNewRecipient){
-    sRecipient = sNewRecipient;
-  }
-
-  if (sDeliveryMethod !== sNewDeliveryMethod){
-    sDeliveryMethod = sNewDeliveryMethod;
-  }
-  if(sDeliveryMethod == "ccBF_Postal Service"){
-    sDeliveryMethod = "ccBF_PostalService"
-  }
-
-  if (sTransferFormat !== sNewTransferFormat) {
-    // speichern
-    sTransferFormat = sNewTransferFormat; // optional nach Save aktualisieren
-  }
-  if (sTransferFormat == "ccBF_XRechnung") {
-    sTransferFormat = "ccBF_XInvoice"
-  }
-  if (sTransferFormat == "ccBF_ZUGFeRD"){
-    sTransferFormat = "ccBF_FacturX"
-  }
-
-
-  // ✅ volles Dokument aus Cache holen
-  const oDoc = oDocCache?.getProperty("/doc");
-  const sCachedId = oDocCache?.getProperty("/docId");
-  if (!oDoc || sCachedId !== sDocId) {
-    MessageToast.show("Document not loaded yet. Please reload and try again.");
-    return;
-  }
-
-  // ✅ Deep copy, dann Werte setzen backend>MetaData/Object/Data/Basics/Recipient/Email/0/Address
-  const oFull = JSON.parse(JSON.stringify(oDoc));
-  oFull.MetaData ??= {};
-  oFull.MetaData.Object ??= {};
-  oFull.MetaData.Object.Data ??= {};
-  oFull.MetaData.Object.Data.Subject = sSubject;
-  oFull.MetaData.Object.Data.AdditionalInformation = sBody;
-  oFull.MetaData.Object.Data.Basics.TransferFormat = sTransferFormat;
-  oFull.MetaData.Object.Data.Basics.deliveryMethod = sDeliveryMethod;
-  oFull.MetaData.Object.Data.Basics.Recipient.Email[0].Address = sRecipient;
-  //Test
-  const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
-  //cci001
-  // const sBase = "https://cci001.app.clarc.com:443/application/api/v1/documenthub";
-  const sUrl1 = `${sBase}/document(${encodeURIComponent(sDocId)})`;
-  const sUrl2 = `${sBase}/document/${encodeURIComponent(sDocId)}`;
-
-  const oHeaders = {
-    "Authorization": `${sType} ${sTok}`,
-    "Accept": "application/json",
-    "Content-Type": "application/json"
-  };
-
-  try {
-    let r = await fetch(sUrl1, { method: "PUT", headers: oHeaders, body: JSON.stringify(oFull) });
-    if (!r.ok) r = await fetch(sUrl2, { method: "PUT", headers: oHeaders, body: JSON.stringify(oFull) });
-
-    if (!r.ok) {
-      const t = await r.text().catch(() => "");
-      throw new Error(`HTTP ${r.status} ${r.statusText}${t ? " - " + t : ""}`);
-    }
-
-    // optional: Cache mit Response aktualisieren (falls Backend Felder ergänzt)
-    const oSaved = await r.json().catch(() => null);
-    if (oSaved && oDocCache) oDocCache.setProperty("/doc", oSaved);
-    if (saveAfterSend == false){
-      MessageToast.show("Data saved.");
-      oDocCache.setProperty("/canSave", false);
-    }
-  } catch (e) {
-    MessageToast.show(`Save failed: ${e.message || e}`);
-    console.error("Template save failed:", e);
-  }
-},
+        // optional: Cache mit Response aktualisieren (falls Backend Felder ergänzt)
+        const oSaved = await r.json().catch(() => null);
+        if (oSaved && oDocCache) oDocCache.setProperty("/doc", oSaved);
+        if (saveAfterSend == false) {
+          MessageToast.show("Data saved.");
+          oDocCache.setProperty("/canSave", false);
+        }
+      } catch (e) {
+        MessageToast.show(`Save failed: ${e.message || e}`);
+        console.error("Template save failed:", e);
+      }
+    },
 
 
 
-    });
+  });
 });
