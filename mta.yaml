@@ -72,6 +72,7 @@ modules:
       - name: demoappdemoapp-uaa
       - name: demoappdemoapp-destination-service
       - name: demoappdemoapp-repo-runtime
+      - name: demoappdemoapp-ui5-flexibility-keyuser   # NEW
     parameters:
       keep-existing-routes: true
       memory: 256M
@@ -122,6 +123,14 @@ resources:
       service: html5-apps-repo
       service-name: demoappdemoapp-html5-runtime
       service-plan: app-runtime
+
+  # NEW: UI5 Flexibility Service for Key Users
+  - name: demoappdemoapp-ui5-flexibility-keyuser
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: ui5-flexibility-keyuser
+      service-name: demoappdemoapp-ui5-flexibility-keyuser
+      service-plan: keyuser
 
 parameters:
   deploy_mode: html5-repo
