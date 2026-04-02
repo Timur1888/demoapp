@@ -141,132 +141,133 @@
                             </infoToolbar>
 
                             <columns>
+                                <!-- ====== Status ====== -->
                                 <Column id="colStatus"  headerMenu="columnHeaderMenu" hAlign="Center" width="55px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="State" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColStatus" text="Status"/>
                                 </Column>
-
+                                <!-- ====== Delivery Mode ====== -->
                                 <Column id="colDeliveryMode"  headerMenu="columnHeaderMenu" hAlign="Center" width="105px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="Process/DeliveryPlan/ExecutionMode" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColEliveryMode" text="Delivery Mode"/>
                                 </Column>
-
+                                <!-- ====== Recipient Name ====== -->
                                 <Column id="colRecipientName"  headerMenu="columnHeaderMenu" hAlign="Center" width="115px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Recipient/Name" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColRecipientName" text="Recipient Name"/>
                                 </Column>
-
+                                <!-- ====== E-Mail ====== -->
                                 <Column id="colRecipientEmail"  headerMenu="columnHeaderMenu" hAlign="Center" width="115px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Recipient/Email/0/Address" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColRecipientEmail" text="Recipient Email"/>
                                 </Column>
-
+                                <!-- ====== Invoice No ====== -->
                                 <Column id="colInvoiceNo" headerMenu="columnHeaderMenu" hAlign="Center" width="90px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Number/Value" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColInvoiceNo" text="Invoice No."/>
                                 </Column>
-
+                                <!-- ====== Invoice Type ====== -->
                                 <Column id="colInvoiceType" hAlign="Center" headerMenu="columnHeaderMenu" width="95px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Type" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColInvoiceType" text="Invoice Type"/>
                                 </Column>
-
+                                <!-- ====== Sub Type ====== -->
                                 <Column id="colSubType" hAlign="Center" headerMenu="columnHeaderMenu" width="90px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/SubType" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColSubType" text="Sub Type"/>
                                 </Column>
-
+                                <!-- ====== Netto Value ====== -->
                                 <Column id="colNettoValue" hAlign="Center" width="115px" headerMenu="columnHeaderMenu">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Net/Value" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColNettoValue" text="Netto Value"/>
                                 </Column>
-
+                                <!-- ====== Brutto Value ====== -->
                                 <Column id="colBruttoValue" hAlign="Center" width="115px" headerMenu="columnHeaderMenu">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Gross/Value" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColBruttoValue" text="Brutto Value"/>
                                 </Column>
-
+                                <!-- ====== CCY ====== -->
                                 <Column id="colCcy" headerMenu="columnHeaderMenu" hAlign="Center" width="50px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Currency/Value" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColCcy" text="CCY"/>
                                 </Column>
-
+                                <!-- ====== Origin ====== -->
                                 <Column id="colOrigin" headerMenu="columnHeaderMenu" width="100px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/OriginSystem" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtOrigin" text="Origin"/>
                                 </Column>
-
+                                <!-- ====== Sales Org ====== -->
                                 <Column id="colSalesOrg" headerMenu="columnHeaderMenu" width="85px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/BusinessPartners/0/SalesOrganisation/Value" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColSalesOrg" text="Sales Org"/>
                                 </Column>
-
+                                <!-- ====== Factura Date ====== -->
                                 <Column id="colFacturaDate" headerMenu="columnHeaderMenu" width="100px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Date/Value/$date" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColFacturaDate" text="Factura Date"/>
                                 </Column>
-
+                                <!-- ====== Creation Datee ====== -->
                                 <Column id="colCreationDate" headerMenu="columnHeaderMenu"  width="105px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="History/Created/Date/$date" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColCreationDate" text="Creation Date"/>
                                 </Column>
-
+                                <!-- ====== Dispatch Datee ====== -->
                                 <Column id="colDispatchDate" headerMenu="columnHeaderMenu" width="105px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/SendDate/$date" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColDispatchDate" text="Dispatch Date"/>
                                 </Column>
-
+                                <!-- ====== Transfer Format ====== -->
                                 <Column id="colTransferFormat" headerMenu="columnHeaderMenu" width="115px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/TransferFormat" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColTransferFormat" text="Transfer Format"/>
                                 </Column>
-
+                                <!-- ====== Delivery Method ====== -->
                                 <Column id="colDeliveryMethod" headerMenu="columnHeaderMenu" width="150px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/DeliveryMethod" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColDeliveryMethod" text="Delivery Method"/>
                                 </Column>
-
+                                <!-- ====== Delivery ID ====== -->
                                 <Column id="colDeliveryId" headerMenu="columnHeaderMenu" width="85px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/BusinessPartners/1/LeitwegId/Value" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColDeliveryId" text="Delivery ID"/>
                                 </Column>
-
+                                <!-- ====== PDF ====== -->
                                 <Column id="colPdf" headerMenu="columnHeaderMenu" width="50px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/TransferFormat" writeToDom="false"/>
