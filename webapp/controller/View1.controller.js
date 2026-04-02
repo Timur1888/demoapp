@@ -669,6 +669,10 @@ sap.ui.define([
         onDelete: function (oController) {
 
         },
+
+        onExit: function () {
+            document.body.classList.remove("billingNoPageScroll");
+        }
     }, View1Helper));
 });
 

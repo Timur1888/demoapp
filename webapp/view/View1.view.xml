@@ -1,5 +1,4 @@
-<mvc:View
-    controllerName="demo.app.demoapp.controller.View1"
+<mvc:View controllerName="demo.app.demoapp.controller.View1"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
@@ -8,37 +7,25 @@
     xmlns:svm="sap.ui.comp.smartvariants">
 
 
-    <f:DynamicPage
-        id="dpBilling"
-        headerExpanded="true"
-        toggleHeaderOnTitleClick="true"
-        >
+    <f:DynamicPage id="dpBilling" headerExpanded="true" toggleHeaderOnTitleClick="true">
         <f:title>
             <f:DynamicPageTitle id="dptTitle">
 
                 <f:heading>
                     <svm:SmartVariantManagement id="svm" showExecuteOnSelection="true" persistencyKey="BillingFilterBarVariant"/>
                 </f:heading>
-                	<f:expandedContent>
-						<Label id="expandedLabel" text="No filters active" />
-					</f:expandedContent>
-					<f:snappedContent>
-						<Label id="snappedLabel" text="No filters active" />
-					</f:snappedContent>
+                <f:expandedContent>
+                    <Label id="expandedLabel" text="No filters active" />
+                </f:expandedContent>
+                <f:snappedContent>
+                    <Label id="snappedLabel" text="No filters active" />
+                </f:snappedContent>
 
                 <f:actions>
 
-                    <Button
-                        id="btnDelete"
-                        icon="sap-icon://delete"
-                        press=".onDelete"
-                        tooltip="Delete selected"
-                        enabled="false" />
+                    <Button id="btnDelete" icon="sap-icon://delete" press=".onDelete" tooltip="Delete selected" enabled="false" />
 
-                    <Button
-                        id="btnSettings"
-                        icon="sap-icon://action-settings"
-                        press=".onSettings" />
+                    <Button id="btnSettings" icon="sap-icon://action-settings" press=".onSettings" />
                 </f:actions>
 
             </f:DynamicPageTitle>
@@ -49,485 +36,329 @@
             <f:DynamicPageHeader id="dphHeader" pinnable="true">
                 <f:content>
 
-                                <Button
-                    text="Clear Filters"
-                    type="Transparent"
-                    press=".onClearFilters"/>
-                             
-                <!-- Hier ist der Bereich wie im Screenshot (Filter + Search) -->
-               <fb:FilterBar id="filterbar" persistencyKey="myPersKey" 
-               useToolbar="false" search=".onSearch" 
-               filterChange=".onFilterChange" 
-               afterVariantLoad=".onAfterVariantLoad"
-               >
-                    <fb:filterGroupItems>
+                    <Button text="Clear Filters" type="Transparent" press=".onClearFilters"/>
 
-                        <!-- Globale Suche  -->
-                        <fb:FilterGroupItem
-                            id="fgiQuickSearch"
-                            groupName="Group1"
-                            name="Search"
-                            label="Search"
-                            visibleInFilterBar="true">
-                            <fb:control>
-                                <SearchField
-                                    id="sfSearch"
-                                    width="18rem"
-                                    placeholder="Search"
-                                    value="{filterModel>/globalSearch}"   
-                                    search=".onSearch" />
-                            </fb:control>
-                        </fb:FilterGroupItem>
+                    <!-- Hier ist der Bereich wie im Screenshot (Filter + Search) -->
+                    <fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
+                        <fb:filterGroupItems>
 
-                        <!-- ====== Status ====== -->
-                        <fb:FilterGroupItem
-                            id="fgiStatus"
-                            name="State"
-                            label="Status"
-                            groupName="Group1"
-                            visibleInFilterBar="true">
-                            <fb:control>
-                                    <MultiComboBox
-                            id="mcbStatus"
-                         name="State"
-                          selectedKeys="{filterModel>/selectedStates}"
-                          selectionFinish=".onSearch"
-                            items="{
+                            <!-- Globale Suche  -->
+                            <fb:FilterGroupItem id="fgiQuickSearch" groupName="Group1" name="Search" label="Search" visibleInFilterBar="true">
+                                <fb:control>
+                                    <SearchField id="sfSearch" width="18rem" placeholder="Search" value="{filterModel>/globalSearch}" search=".onSearch" />
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                            <!-- ====== Status ====== -->
+                            <fb:FilterGroupItem id="fgiStatus" name="State" label="Status" groupName="Group1" visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="mcbStatus" name="State" selectedKeys="{filterModel>/selectedStates}" selectionFinish=".onSearch" items="{
                                 path: 'filterModel>/StatusList',
                                 templateShareable: false
                             }">
-                         <core:Item key="{filterModel>key}" text="{path: 'filterModel>text',
+                                        <core:Item key="{filterModel>key}" text="{path: 'filterModel>text',
                                                                 formatter: '.formatter.formatAbbreviations'}" />
-                         </MultiComboBox>
-                            </fb:control>
-                        </fb:FilterGroupItem>
-                        <!-- ====== Recipient name ====== -->
-                       <fb:FilterGroupItem
-                            id="fgiRecipientName"
-                            name="RecipientName"
-                            label="Recipient Name"
-                            groupName="Group1"
-                            visibleInFilterBar="true">
-                            <fb:control>
-                                <SearchField
-                                        id="sfRecipientName"
-                                        width="50%"
-                                        placeholder="Recipient Name"
-                                        value="{filterModel>/recipientName}"
-                                        search=".onSearch"
-                                        >
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+                            <!-- ====== Recipient name ====== -->
+                            <fb:FilterGroupItem id="fgiRecipientName" name="RecipientName" label="Recipient Name" groupName="Group1" visibleInFilterBar="true">
+                                <fb:control>
+                                    <SearchField id="sfRecipientName" width="50%" placeholder="Recipient Name" value="{filterModel>/recipientName}" search=".onSearch">
                                     </SearchField>
-                            </fb:control>
-                        </fb:FilterGroupItem>
+                                </fb:control>
+                            </fb:FilterGroupItem>
 
-                        <!-- ====== Netto Betrag ====== -->
-                        <fb:FilterGroupItem
-                            id="fgiNettoValue"
-                            name="NettoValue"
-                            label="Netto Value"
-                            groupName="Group1"
-                            visibleInFilterBar="true">
-                        <fb:control>
-                            <SearchField
-                                id="sfNettoValue"
-                                width="50%"
-                                placeholder="From - to"
-                                value="{filterModel>/nettoValue}"
-                                search=".onSearch" />
-                        </fb:control>
-                        </fb:FilterGroupItem>
+                            <!-- ====== Netto Betrag ====== -->
+                            <fb:FilterGroupItem id="fgiNettoValue" name="NettoValue" label="Netto Value" groupName="Group1" visibleInFilterBar="true">
+                                <fb:control>
+                                    <SearchField id="sfNettoValue" width="50%" placeholder="From - to" value="{filterModel>/nettoValue}" search=".onSearch" />
+                                </fb:control>
+                            </fb:FilterGroupItem>
 
-                        <!-- ====== InvoiceNo ====== -->
-                        <fb:FilterGroupItem
-                        id="fgiInvoiceNo"
-                        name="InvoiceNo"
-                        label="Invoice No."
-                        groupName="Group1"
-                        visibleInFilterBar="true">
-                        <fb:control>
-                            <SearchField
-                                id="sfInvNo"
-                                width="50%"
-                                placeholder="Invoice No."
-                                value="{filterModel>/invoiceNo}"
-                                search=".onSearch"/>
-                        </fb:control>
-                    </fb:FilterGroupItem>
+                            <!-- ====== InvoiceNo ====== -->
+                            <fb:FilterGroupItem id="fgiInvoiceNo" name="InvoiceNo" label="Invoice No." groupName="Group1" visibleInFilterBar="true">
+                                <fb:control>
+                                    <SearchField id="sfInvNo" width="50%" placeholder="Invoice No." value="{filterModel>/invoiceNo}" search=".onSearch"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
 
-                    <!-- ====== Sales organisation ====== -->
-                    <fb:FilterGroupItem
-                        id="fgiSalesOrg"
-                        name="SalesOrganisation"
-                        label="Sales Organisation"
-                        groupName="Group1"
-                        visibleInFilterBar="true">
-                        <fb:control>
-                            <MultiComboBox
-                            id="mcbSalesOrg"
-                            name="SalesOrganisation"
-                            selectedKeys="{filterModel>/salesOrganisation}"
-                            selectionFinish=".onSearch"
-                            items="{filterModel>/SalesOrganisationList}">
-                            <core:Item key="{filterModel>key}" text="{filterModel>text}" />
-                            </MultiComboBox>
-                            </fb:control>
-                    </fb:FilterGroupItem>
+                            <!-- ====== Sales organisation ====== -->
+                            <fb:FilterGroupItem id="fgiSalesOrg" name="SalesOrganisation" label="Sales Organisation" groupName="Group1" visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="mcbSalesOrg" name="SalesOrganisation" selectedKeys="{filterModel>/salesOrganisation}" selectionFinish=".onSearch" items="{filterModel>/SalesOrganisationList}">
+                                        <core:Item key="{filterModel>key}" text="{filterModel>text}" />
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
 
-                    <!-- ====== Invoice Type ====== -->
-                    <fb:FilterGroupItem
-                        id="fgiInvType"
-                        name="InvoiceType"
-                        label="Invoice Type"
-                        groupName="Group1"
-                        visibleInFilterBar="true">
-                        <fb:control>
-                            <MultiComboBox
-                                id="mcbInvType"
-                                name="InvoiceType"
-                                selectedKeys="{filterModel>/invoiceType}"
-                                selectionFinish=".onSearch"
-                                items="{filterModel>/InvoiceTypeList}">
-                                <core:Item key="{filterModel>key}" text="{filterModel>text}" />
-                            </MultiComboBox>
-                        </fb:control>
-                    </fb:FilterGroupItem>
+                            <!-- ====== Invoice Type ====== -->
+                            <fb:FilterGroupItem id="fgiInvType" name="InvoiceType" label="Invoice Type" groupName="Group1" visibleInFilterBar="true">
+                                <fb:control>
+                                    <MultiComboBox id="mcbInvType" name="InvoiceType" selectedKeys="{filterModel>/invoiceType}" selectionFinish=".onSearch" items="{filterModel>/InvoiceTypeList}">
+                                        <core:Item key="{filterModel>key}" text="{filterModel>text}" />
+                                    </MultiComboBox>
+                                </fb:control>
+                            </fb:FilterGroupItem>
 
-                    <!-- ====== Sub Type ====== -->
-                     <fb:FilterGroupItem
-                        id="fgiSubType"
-                        name="SubType"
-                        label="Sub Type"
-                        groupName="Group1"
-                        visibleInFilterBar="true">
-                        <fb:control>
-                            <SearchField
-                                    id="sfSubType"
-                                    width="50%"
-                                    value="{filterModel>/subType}"
-                                    placeholder="Sub Type"
-                                    search=".onSearch">
-                                </SearchField>
-                        </fb:control>
-                    </fb:FilterGroupItem>
+                            <!-- ====== Sub Type ====== -->
+                            <fb:FilterGroupItem id="fgiSubType" name="SubType" label="Sub Type" groupName="Group1" visibleInFilterBar="true">
+                                <fb:control>
+                                    <SearchField id="sfSubType" width="50%" value="{filterModel>/subType}" placeholder="Sub Type" search=".onSearch">
+                                    </SearchField>
+                                </fb:control>
+                            </fb:FilterGroupItem>
 
-                    <!-- ====== Factura Datee ====== -->
-                    <fb:FilterGroupItem
-                        id="fgiFacturaDate"
-                        name="FacturaDate"
-                        label="Factura Date"
-                        groupName="Group1"
-                        visibleInFilterBar="true">
-                    <fb:control>
-                        <DateRangeSelection
-                            id="drsFacturaDate"
-                            displayFormat="dd.MM.yyyy"
-                            showCurrentDateButton="true"
-			                showFooter="true"
-                            valueFormat="yyyy-MM-dd"
-                            dateValue="{filterModel>/factDateFrom}"
-                            secondDateValue="{filterModel>/factDateTo}"
-                            change=".onFacturaDateChange"
-                            parseError=".onFacturaDateParseError"
-                            class="facturaDateSmallText"/>
-                    </fb:control>
-                    </fb:FilterGroupItem>
-                        
-                    </fb:filterGroupItems>
-                </fb:FilterBar>  
-        </f:content>
+                            <!-- ====== Factura Datee ====== -->
+                            <fb:FilterGroupItem id="fgiFacturaDate" name="FacturaDate" label="Factura Date" groupName="Group1" visibleInFilterBar="true">
+                                <fb:control>
+                                    <DateRangeSelection id="drsFacturaDate" displayFormat="dd.MM.yyyy" showCurrentDateButton="true" showFooter="true" valueFormat="yyyy-MM-dd" dateValue="{filterModel>/factDateFrom}" secondDateValue="{filterModel>/factDateTo}" change=".onFacturaDateChange" parseError=".onFacturaDateParseError" class="facturaDateSmallText"/>
+                                </fb:control>
+                            </fb:FilterGroupItem>
+
+                        </fb:filterGroupItems>
+                    </fb:FilterBar>
+                </f:content>
             </f:DynamicPageHeader>
         </f:header>
 
         <!-- ====== CONTENT ====== -->
         <f:content>
-
-            <Table
-                id="tblBilling"
-                inset="false"
-                alternateRowColors="true"
-                noDataText="Please set filter"
-                sticky="ColumnHeaders"
-                mode="MultiSelect"
-                items="{backend>/value}"
-                itemPress=".onInvoicePress"
-                selectionChange=".onSelectionChange">
-            <infoToolbar>
-				<OverflowToolbar id="vsdFilterBar" visible="false">
-					<Text id="vsdFilterLabel" />
-				</OverflowToolbar>
-			</infoToolbar>
-                <columns>
-                <!-- Status -->
-                <Column id="colStatus" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="State" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColStatus" text="Status"/>
-                </Column>
-
-                <!-- Delivery Mode -->
-                <Column id="colDeliveryMode" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="Process/DeliveryPlan/ExecutionMode" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColEliveryMode" text="Delivery Mode"/>
-                </Column>
-
-                <!-- Recipient Name -->
-                <Column id="colRecipientName" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Recipient/Name" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColRecipientName" text="Recipient Name"/>
-                </Column>
-
-                <!-- Recipient Email -->
-                <Column id="colRecipientEmail" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Recipient/Email/0/Address" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColRecipientEmail" text="Recipient Email"/>
-                </Column>
-
-                <!-- Invoice No. -->
-                <Column id="colInvoiceNo" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Number/Value" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColInvoiceNo" text="Invoice No."/>
-                </Column>
-
-                <!-- Invoice Type (formatter in cell -> sort by raw Type) -->
-                <Column id="colInvoiceType" hAlign="Center" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Type" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColInvoiceType" text="Invoice Type"/>
-                </Column>
-
-                <!-- Invoice Sub Type  -->
-                <Column id="colSubType" hAlign="Center" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/SubType" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColSubType" text="Sub Type"/>
-                </Column>
-
-                <!-- Netto Value -->
-                <Column id="colNettoValue" hAlign="End" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Net/Value" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColNettoValue" text="Netto Value"/>
-                </Column>
-
-                <!-- Brutto Value -->
-                <Column id="colBruttoValue" hAlign="End" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Gross/Value" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColBruttoValue" text="Brutto Value"/>
-                </Column>
-
-                <!-- CCY -->
-                <Column id="colCcy" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Currency/Value" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColCcy" text="CCY"/>
-                </Column>
-
-                <!-- Origin System -->
-                <Column id="colOrigin" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/OriginSystem" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtOrigin" text="Origin"/>
-                </Column>
-
-                <!-- Sales Org -->
-                <Column id="colSalesOrg" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/BusinessPartners/0/SalesOrganisation/Value" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColSalesOrg" text="Sales Org"/>
-                </Column>
-
-                <!-- Factura Date -->
-                <Column id="colFacturaDate" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Date/Value/$date" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColFacturaDate" text="Factura Date"/>
-                </Column>
-
-                <!-- Creation Date -->
-                <Column id="colCreationDate" headerMenu="columnHeaderMenu" width="105px">
-                    <customData>
-                    <core:CustomData key="sortKey" value="History/Created/Date/$date" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColCreationDate" text="Creation Date"/>
-                </Column>
-
-                <!-- Dispatch Date -->
-                <Column id="colDispatchDate" headerMenu="columnHeaderMenu" width="105px">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/SendDate/$date" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColDispatchDate" text="Dispatch Date"/>
-                </Column>
-
-                <!-- Transfer Format -->
-                <Column id="colTransferFormat" headerMenu="columnHeaderMenu" width="115px">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/TransferFormat" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColTransferFormat" text="Transfer Format"/>
-                </Column>
-
-                <!-- Delivery Method (formatter in cell -> sort by raw DeliveryMethod) -->
-                <Column id="colDeliveryMethod" headerMenu="columnHeaderMenu" width="150px">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/DeliveryMethod" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColDeliveryMethod" text="Delivery Method"/>
-                </Column>
-
-                <!-- Delivery ID -->
-                <Column id="colDeliveryId" headerMenu="columnHeaderMenu">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/BusinessPartners/1/LeitwegId/Value" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColDeliveryId" text="Delivery ID"/>
-                </Column>
-
-                <!-- PDF (formatter in cell -> sort by raw TransferFormat) -->
-                <Column id="colPdf" headerMenu="columnHeaderMenu" width="55px">
-                    <customData>
-                    <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/TransferFormat" writeToDom="false"/>
-                    </customData>
-                    <Text id="txtColPdf" text="PDF"/>
-                </Column>
-                </columns>
+            <VBox id="billingTableHost" class="billingTableHost" fitContainer="true">
 
 
-                <items>
-                    <ColumnListItem id="cliBilling" type="Active">
-                        <cells>
 
-                            <!-- Status -->
-                            <ObjectStatus
-                                id="osState"
-                                text=""
-                                icon="{
-                                    path: 'backend>State',
-                                    formatter: '.formatter.formatStatusIcon'
-                                }"
-                                state="{
-                                    path: 'backend>State',
-                                    formatter: '.formatter.formatStatusState'
-                                }"
-                            />
+                <ScrollContainer id="scBillingTable" width="100%" height="100%" horizontal="true" vertical="true" focusable="true">
 
-                            <!-- Delivery Mode -->
-                            <ObjectStatus 
-                                    id="txtDeliveryMode" 
-                                    text=""
-                                    icon="{
+                    <VBox id="billingTableCanvas" class="billingTableCanvas">
+
+                        <Table id="tblBilling" width="auto" inset="false" alternateRowColors="true" noDataText="Please set filter" sticky="ColumnHeaders" mode="MultiSelect" items="{backend>/value}" itemPress=".onInvoicePress" selectionChange=".onSelectionChange">
+
+                            <infoToolbar>
+                                <OverflowToolbar id="vsdFilterBar" visible="false">
+                                    <Text id="vsdFilterLabel" />
+                                </OverflowToolbar>
+                            </infoToolbar>
+
+                            <columns>
+                                <Column id="colStatus"  headerMenu="columnHeaderMenu" hAlign="Center" width="55px">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="State" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColStatus" text="Status"/>
+                                </Column>
+
+                                <Column id="colDeliveryMode"  headerMenu="columnHeaderMenu" hAlign="Center" width="105px">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="Process/DeliveryPlan/ExecutionMode" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColEliveryMode" text="Delivery Mode"/>
+                                </Column>
+
+                                <Column id="colRecipientName"  headerMenu="columnHeaderMenu" hAlign="Center" width="115px">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Recipient/Name" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColRecipientName" text="Recipient Name"/>
+                                </Column>
+
+                                <Column id="colRecipientEmail"  headerMenu="columnHeaderMenu" hAlign="Center" width="115px">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Recipient/Email/0/Address" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColRecipientEmail" text="Recipient Email"/>
+                                </Column>
+
+                                <Column id="colInvoiceNo" headerMenu="columnHeaderMenu" hAlign="Center" width="90px">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Number/Value" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColInvoiceNo" text="Invoice No."/>
+                                </Column>
+
+                                <Column id="colInvoiceType" hAlign="Center" headerMenu="columnHeaderMenu" width="95px">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Type" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColInvoiceType" text="Invoice Type"/>
+                                </Column>
+
+                                <Column id="colSubType" hAlign="Center" headerMenu="columnHeaderMenu" width="90px">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/SubType" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColSubType" text="Sub Type"/>
+                                </Column>
+
+                                <Column id="colNettoValue" hAlign="Center" width="115px" headerMenu="columnHeaderMenu">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Net/Value" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColNettoValue" text="Netto Value"/>
+                                </Column>
+
+                                <Column id="colBruttoValue" hAlign="Center" width="115px" headerMenu="columnHeaderMenu">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Gross/Value" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColBruttoValue" text="Brutto Value"/>
+                                </Column>
+
+                                <Column id="colCcy" headerMenu="columnHeaderMenu" hAlign="Center" width="50px">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Amounts/Currency/Value" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColCcy" text="CCY"/>
+                                </Column>
+
+                                <Column id="colOrigin" headerMenu="columnHeaderMenu" width="100px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/OriginSystem" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtOrigin" text="Origin"/>
+                                </Column>
+
+                                <Column id="colSalesOrg" headerMenu="columnHeaderMenu" width="85px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/BusinessPartners/0/SalesOrganisation/Value" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColSalesOrg" text="Sales Org"/>
+                                </Column>
+
+                                <Column id="colFacturaDate" headerMenu="columnHeaderMenu" width="100px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Date/Value/$date" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColFacturaDate" text="Factura Date"/>
+                                </Column>
+
+                                <Column id="colCreationDate" headerMenu="columnHeaderMenu"  width="105px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="History/Created/Date/$date" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColCreationDate" text="Creation Date"/>
+                                </Column>
+
+                                <Column id="colDispatchDate" headerMenu="columnHeaderMenu" width="105px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/SendDate/$date" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColDispatchDate" text="Dispatch Date"/>
+                                </Column>
+
+                                <Column id="colTransferFormat" headerMenu="columnHeaderMenu" width="115px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/TransferFormat" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColTransferFormat" text="Transfer Format"/>
+                                </Column>
+
+                                <Column id="colDeliveryMethod" headerMenu="columnHeaderMenu" width="150px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/DeliveryMethod" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColDeliveryMethod" text="Delivery Method"/>
+                                </Column>
+
+                                <Column id="colDeliveryId" headerMenu="columnHeaderMenu" width="85px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/BusinessPartners/1/LeitwegId/Value" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColDeliveryId" text="Delivery ID"/>
+                                </Column>
+
+                                <Column id="colPdf" headerMenu="columnHeaderMenu" width="50px" hAlign="Center">
+                                    <customData>
+                                        <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/TransferFormat" writeToDom="false"/>
+                                    </customData>
+                                    <Text id="txtColPdf" text="PDF"/>
+                                </Column>
+                            </columns>
+
+                            <items>
+                                <ColumnListItem id="cliBilling" type="Active">
+                                    <cells>
+                                        <ObjectStatus id="osState" text="" icon="{
+                                        path: 'backend>State',
+                                        formatter: '.formatter.formatStatusIcon'
+                                    }" state="{
+                                        path: 'backend>State',
+                                        formatter: '.formatter.formatStatusState'
+                                    }" />
+
+                                        <ObjectStatus id="txtDeliveryMode" text="" icon="{
                                         path: 'backend>Process/DeliveryPlan/ExecutionMode',
                                         formatter: '.formatter.formatDeliveryModeIcon'
-                                    }"
-                                    state="{
+                                    }" state="{
                                         path: 'backend>Process/DeliveryPlan/ExecutionMode',
                                         formatter: '.formatter.formatDeliveryModeState'
                                     }" />
 
-                            <!-- Recipient Name -->
-                            <Text id="txtRecipientName" text="{backend>MetaData/Object/Data/Basics/Recipient/Name}" />
+                                        <Text id="txtRecipientName" text="{backend>MetaData/Object/Data/Basics/Recipient/Name}" />
+                                        <Text id="txtRecipientEmail" text="{backend>MetaData/Object/Data/Basics/Recipient/Email/0/Address}" />
+                                        <Text id="txtInvoiceNo" text="{backend>MetaData/Object/Data/Basics/Number/Value}" />
 
-                            <!-- Recipient Email -->
-                            <Text id="txtRecipientEmail" text="{backend>MetaData/Object/Data/Basics/Recipient/Email/0/Address}" />
-
-                            <!-- Invoice No. -->
-                            <Text id="txtInvoiceNo" text="{backend>MetaData/Object/Data/Basics/Number/Value}" />
-
-                            <!-- Invoice Type -->
-                            <Text id="txtInvoiceType" text="{
-                                path: 'backend>MetaData/Object/Data/Type',
-                                formatter: '.formatter.formatAbbreviations'
-                            }" />
-            
-                            <!-- Sub Type -->
-                            <Text id="txtSubType" text="{backend>MetaData/Object/Data/SubType}" />
-
-                            <!-- Netto -->
-                            <ObjectNumber
-                                id="onNetto"
-                                number="{
-                                    path: 'backend>MetaData/Object/Data/Amounts/Net/Value',
-                                    formatter: '.formatter.formatCurrencyValue'
+                                        <Text id="txtInvoiceType" text="{
+                                    path: 'backend>MetaData/Object/Data/Type',
+                                    formatter: '.formatter.formatAbbreviations'
                                 }" />
 
-                            <!-- Brutto -->
-                            <ObjectNumber
-                                id="onBrutto"
-                                number="{
-                                    path: 'backend>MetaData/Object/Data/Amounts/Gross/Value',
-                                    formatter: '.formatter.formatCurrencyValue'
+                                        <Text id="txtSubType" text="{backend>MetaData/Object/Data/SubType}" />
+
+                                        <ObjectNumber id="onNetto" number="{
+                                        path: 'backend>MetaData/Object/Data/Amounts/Net/Value',
+                                        formatter: '.formatter.formatCurrencyValue'
+                                    }" />
+
+                                        <ObjectNumber id="onBrutto" number="{
+                                        path: 'backend>MetaData/Object/Data/Amounts/Gross/Value',
+                                        formatter: '.formatter.formatCurrencyValue'
+                                    }" />
+
+                                        <Text id="txtCcyCell" text="{
+                                    path: 'backend>MetaData/Object/Data/Amounts/Currency/Value',
+                                    formatter: '.formatter.formatAbbreviations'
                                 }" />
 
-                            <!-- CCY -->
-                            <Text id="txtCcyCell" text="{
-                                path: 'backend>MetaData/Object/Data/Amounts/Currency/Value',
-                                formatter: '.formatter.formatAbbreviations'
-                            }" />
+                                        <Text id="txtOriginCell" text="{backend>MetaData/OriginSystem}" />
+                                        <Text id="txtSalesOrgCell" text="{backend>MetaData/Object/Data/BusinessPartners/0/SalesOrganisation/Value}" />
 
-                            <!-- Origin System -->
-                            <Text id="txtOriginCell" text="{backend>MetaData/OriginSystem}" />
+                                        <Text id="txtFacturaDateCell" text="{
+                                    path: 'backend>MetaData/Object/Data/Basics/Date/Value/$date',
+                                    formatter: '.formatter.formatDate'
+                                }" />
 
-                            <!-- Sales Org -->
-                            <Text id="txtSalesOrgCell" text="{backend>MetaData/Object/Data/BusinessPartners/0/SalesOrganisation/Value}" />
+                                        <Text id="txtCreationDateCell" text="{
+                                    path: 'backend>History/Created/Date/$date',
+                                    formatter: '.formatter.formatDate'
+                                }" />
 
-                            <!-- Factura Date -->
-                            <Text id="txtFacturaDateCell" text="{
-                                path: 'backend>MetaData/Object/Data/Basics/Date/Value/$date',
-                                formatter: '.formatter.formatDate'
-                            }" />
+                                        <Text id="txtDispatchDateCell" text="{
+                                    path: 'backend>MetaData/Object/Data/Basics/SendDate/$date',
+                                    formatter: '.formatter.formatDate'
+                                }" />
 
-                            <!-- Creation Date -->
-                            <Text id="txtCreationDateCell" text="{
-                                path: 'backend>History/Created/Date/$date',
-                                formatter: '.formatter.formatDate'
-                            }" />
+                                        <Text id="txtTransferFormatCell" text="{
+                                        path: 'backend>MetaData/Object/Data/Basics/TransferFormat',
+                                        formatter: '.formatter.formatAbbreviations'
+                                    }" />
 
-                            <!-- Dispatch Date -->
-                            <Text id="txtDispatchDateCell" text="{
-                                path: 'backend>MetaData/Object/Data/Basics/SendDate/$date',
-                                formatter: '.formatter.formatDate'
-                            }" />
+                                        <ObjectStatus text="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatAbbreviations'}" icon="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatDeliveryMethodIcon'}" />
 
-                            <!-- Transfer Format -->
-                            <Text id="txtTransferFormatCell" text="{path: 'backend>MetaData/Object/Data/Basics/TransferFormat',
-                                                                    formatter: '.formatter.formatAbbreviations'}" />
-                            <!-- Delivery Method -->
-                            <ObjectStatus
-                                text="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatAbbreviations'}"
-                                icon="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatDeliveryMethodIcon'}" />
+                                        <Text id="txtDeliveryIdCell" text="{backend>MetaData/Object/Data/BusinessPartners/1/LeitwegId/Value}" />
 
-                            <!-- Delivery ID -->
-                            <Text id="txtDeliveryIdCell" text="{backend>MetaData/Object/Data/BusinessPartners/1/LeitwegId/Value}" />
+                                        <Text id="txtPdfCell" text="{
+                                    path: 'backend>MetaData/Object/Data/Basics/TransferFormat',
+                                    formatter: '.formatter.formatPdf'
+                                }" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
 
-                            <!-- PDF -->
-                            <Text id="txtPdfCell" text="{
-                                path: 'backend>MetaData/Object/Data/Basics/TransferFormat',
-                                formatter: '.formatter.formatPdf'
-                            }" />
-
-                        </cells>
-                    </ColumnListItem>
-                </items>
-            </Table>
-
+                    </VBox>
+                </ScrollContainer>
+            </VBox>
         </f:content>
     </f:DynamicPage>
 

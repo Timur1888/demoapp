@@ -86,3 +86,23 @@
   width: 100%;
   min-width: 0; /* wichtig fürs Wrapping bei langen Messages */
 }
+
+.billingTableCanvas {
+    min-width: 140rem;
+}
+
+.billingTableHostFullScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: var(--sapBackgroundColor);
+    padding: 1rem;
+}
+
+.billingTableHostFullScreen .sapMScrollCont {
+    height: calc(100vh - 4rem) !important;
+}
+
+.billingNoPageScroll {
+    overflow: hidden;
+}
