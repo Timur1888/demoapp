@@ -36,7 +36,7 @@
             <f:DynamicPageHeader id="dphHeader" pinnable="true">
                 <f:content>
 
-                    <Button text="Clear Filters" type="Transparent" press=".onClearFilters"/>
+                    <Button id="clFilt" text="Clear Filters" type="Transparent" press=".onClearFilters"/>
 
                     <!-- Hier ist der Bereich wie im Screenshot (Filter + Search) -->
                     <fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
@@ -56,7 +56,7 @@
                                 path: 'filterModel>/StatusList',
                                 templateShareable: false
                             }">
-                                        <core:Item key="{filterModel>key}" text="{path: 'filterModel>text',
+                                        <core:Item id = "itemStatus" key="{filterModel>key}" text="{path: 'filterModel>text',
                                                                 formatter: '.formatter.formatAbbreviations'}" />
                                     </MultiComboBox>
                                 </fb:control>
@@ -87,7 +87,7 @@
                             <fb:FilterGroupItem id="fgiSalesOrg" name="SalesOrganisation" label="Sales Organisation" groupName="Group1" visibleInFilterBar="true">
                                 <fb:control>
                                     <MultiComboBox id="mcbSalesOrg" name="SalesOrganisation" selectedKeys="{filterModel>/salesOrganisation}" selectionFinish=".onSearch" items="{filterModel>/SalesOrganisationList}">
-                                        <core:Item key="{filterModel>key}" text="{filterModel>text}" />
+                                        <core:Item id = "itemSalesOrg" key="{filterModel>key}" text="{filterModel>text}" />
                                     </MultiComboBox>
                                 </fb:control>
                             </fb:FilterGroupItem>
@@ -96,7 +96,7 @@
                             <fb:FilterGroupItem id="fgiInvType" name="InvoiceType" label="Invoice Type" groupName="Group1" visibleInFilterBar="true">
                                 <fb:control>
                                     <MultiComboBox id="mcbInvType" name="InvoiceType" selectedKeys="{filterModel>/invoiceType}" selectionFinish=".onSearch" items="{filterModel>/InvoiceTypeList}">
-                                        <core:Item key="{filterModel>key}" text="{filterModel>text}" />
+                                        <core:Item id = "itemInvType" key="{filterModel>key}" text="{filterModel>text}" />
                                     </MultiComboBox>
                                 </fb:control>
                             </fb:FilterGroupItem>
@@ -344,7 +344,7 @@
                                         formatter: '.formatter.formatAbbreviations'
                                     }" />
 
-                                        <ObjectStatus text="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatAbbreviations'}" icon="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatDeliveryMethodIcon'}" />
+                                        <ObjectStatus id = "objStatus" text="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatAbbreviations'}" icon="{path:'backend>MetaData/Object/Data/Basics/DeliveryMethod', formatter:'.formatter.formatDeliveryMethodIcon'}" />
 
                                         <Text id="txtDeliveryIdCell" text="{backend>MetaData/Object/Data/BusinessPartners/1/LeitwegId/Value}" />
 
