@@ -489,6 +489,7 @@ sap.ui.define([
 
       if (!sRecipient) {
         sap.m.MessageBox.warning("Please enter a Receiver email.");
+        oSend.setProperty("/canSend", true);
         return;
       }
 
