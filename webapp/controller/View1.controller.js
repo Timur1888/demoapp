@@ -100,6 +100,8 @@ sap.ui.define([
             this.oSmartVariantManagement.addPersonalizableControl(oPersInfo);
             //--------------------------------------------------
 
+            this._oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+
             //--------------------Sortierung--------------------- 
             this._aColumnMenus = [];
             this._fnItemsBindingChange = null;
@@ -188,14 +190,14 @@ sap.ui.define([
                         })
                     ]);
                     if (!billingResp.ok) {
-                        console.error("Billing Request Error:", billingResp.status);
+                        console.error( this._oBundle.getText("BillingRequestError"), billingResp.status);
                         return;
                     }
 
                     const billingJson = await billingResp.json();
                     oBackend.setData(billingJson);
                 } catch (e) {
-                    console.error("Fehler beim Laden:", e);
+                    console.error(this._oBundle.getText("loadError"), e);
                 }
                 this.oTable.setShowOverlay(false);
                 return;
@@ -210,7 +212,7 @@ sap.ui.define([
             const aRows = this.getOwnerComponent().getModel("backend").getProperty("/value") || [];
             if (aRows.length === 0) {
                 sap.m.MessageToast.show(
-                    "No results were found for the specified filters"
+                    this._oBundle.getText("NoResultsForFilter")
                 );
             }
 
@@ -250,7 +252,7 @@ sap.ui.define([
 
             this._oColumnPopover = new sap.m.Popover({
                 placement: sap.m.PlacementType.Auto,   // <= wichtig
-                title: "Columns",
+                title: "{i18n>Columns}",
                 contentWidth: "16rem",
                 content: oList
             });
@@ -438,32 +440,32 @@ sap.ui.define([
             var aFiltersWithValues = this.oFilterBar.retrieveFiltersWithValues();
 
             if (aFiltersWithValues.length === 0) {
-                return "No filters active";
+                return this._oBundle.getText("NoFilters");
             }
 
             if (aFiltersWithValues.length === 1) {
-                return aFiltersWithValues.length + " filter active: " + aFiltersWithValues.join(", ");
+                return aFiltersWithValues.length + this._oBundle.getText("FilterActive") + aFiltersWithValues.join(", ");
             }
 
-            return aFiltersWithValues.length + " filters active: " + aFiltersWithValues.join(", ");
+            return aFiltersWithValues.length + this._oBundle.getText("FilterActive") + aFiltersWithValues.join(", ");
         },
 
         getFormattedSummaryTextExpanded: function () {
             var aFiltersWithValues = this.oFilterBar.retrieveFiltersWithValues();
 
             if (aFiltersWithValues.length === 0) {
-                return "No filters active";
+                return this._oBundle.getText("NoFilters");
             }
 
-            var sText = aFiltersWithValues.length + " filters active",
+            var sText = aFiltersWithValues.length + this._oBundle.getText("ActiveFilter"),
                 aNonVisibleFiltersWithValues = this.oFilterBar.retrieveNonVisibleFiltersWithValues();
 
             if (aFiltersWithValues.length === 1) {
-                sText = aFiltersWithValues.length + " filter active";
+                sText = aFiltersWithValues.length + this._oBundle.getText("ActiveFilter");
             }
 
             if (aNonVisibleFiltersWithValues && aNonVisibleFiltersWithValues.length > 0) {
-                sText += " (" + aNonVisibleFiltersWithValues.length + " hidden)";
+                sText += " (" + aNonVisibleFiltersWithValues.length + this._oBundle.getText("ActiveFilter") + " )";
             }
 
             return sText;
@@ -535,7 +537,7 @@ sap.ui.define([
             // ange-only erzwingen
             if (aParts.length !== 2) {
                 oDRS.setValueState(sap.ui.core.ValueState.Error);
-                oDRS.setValueStateText("Please select a date range (from - to).");
+                oDRS.setValueStateText(this._oBundle.getText("SelectDateRange"));
                 oDRS.setDateValue(null);
                 oDRS.setSecondDateValue(null);
                 return;
@@ -546,7 +548,7 @@ sap.ui.define([
 
             if (!rFrom.ok || !rTo.ok) {
                 oDRS.setValueState(sap.ui.core.ValueState.Error);
-                oDRS.setValueStateText((!rFrom.ok ? rFrom.msg : rTo.msg) || "Invalid date range.");
+                oDRS.setValueStateText((!rFrom.ok ? rFrom.msg : rTo.msg) || this._oBundle.getText("InvalidDateRange"));
                 oDRS.setDateValue(null);
                 oDRS.setSecondDateValue(null);
                 return;
@@ -555,7 +557,7 @@ sap.ui.define([
             // Optional: von > bis verhindern
             if (rFrom.date.getTime() > rTo.date.getTime()) {
                 oDRS.setValueState(sap.ui.core.ValueState.Error);
-                oDRS.setValueStateText("'From' date must be before 'To' date.");
+                oDRS.setValueStateText(this._oBundle.getText("FromBeforeTo"));
                 oDRS.setDateValue(null);
                 oDRS.setSecondDateValue(null);
                 return;
@@ -575,7 +577,7 @@ sap.ui.define([
         onFacturaDateParseError: function (oEvent) {
             var oDRS = oEvent.getSource();
             oDRS.setValueState(sap.ui.core.ValueState.Error);
-            oDRS.setValueStateText("Invalid date format. Use dd.MM.yyyy - dd.MM.yyyy.");
+            oDRS.setValueStateText(this._oBundle.getText("InvalidDateFormat"));
         },
 
         //::::::::::::::::::::::::::::::::::::::::::::::::::::Allgemeine Funktionen für dieses View::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -637,7 +639,7 @@ sap.ui.define([
             const oCtx = oItem.getBindingContext("backend");
 
             if (!oCtx) {
-                console.error("Kein BindingContext für Model 'backend' gefunden");
+                console.error(this._oBundle.getText("NoBindingContext"));
                 return;
             }
 
@@ -664,10 +666,6 @@ sap.ui.define([
             if (oDeleteButton) {
                 oDeleteButton.setEnabled(aSelected.length > 0);
             }
-        },
-
-        onDelete: function (oController) {
-
         },
 
         onExit: function () {

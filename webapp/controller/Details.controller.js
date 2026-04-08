@@ -40,10 +40,10 @@ sap.ui.define([
         currentInvoiceKey: "",     // Rechnungsnummer (Key)
         invoices: {},              // Map: { [invoiceKey]: {subject, body, selectedLanguageKey} }
         languages: [
-          { key: "de", name: "German" },
-          { key: "en", name: "English" },
-          { key: "fr", name: "French" },
-          { key: "es", name: "Spanish" }
+          { key: "de", textKey: "German" },
+          { key: "en", textKey: "English" },
+          { key: "fr", textKey: "French" },
+          { key: "es", textKey: "Spanien" }
         ]
       });
       this.getView().setModel(oTemplateModel, "template");
@@ -68,6 +68,8 @@ sap.ui.define([
 
       const oRouter = UIComponent.getRouterFor(this);
       oRouter.getRoute("DetailsRoute").attachPatternMatched(this._onRouteMatched, this);
+
+      this._oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
 
       // immer unten lassen, damit werden die Items für die Bilder klickbar
       this.byId("uploadSetInvoice")?.addEventDelegate({
@@ -488,14 +490,14 @@ sap.ui.define([
       const sBcc = (oSend?.getProperty("/bcc") || "").trim();
 
       if (!sRecipient) {
-        sap.m.MessageBox.warning("Please enter a Receiver email.");
+        sap.m.MessageBox.warning(this._oBundle.getText("NoReciever"));
         oSend.setProperty("/canSend", true);
         return;
       }
 
       const sDocHubItemId = (oModel?.getProperty("/CurrentInvoice/Id") || "").trim();
       if (!sDocHubItemId) {
-        sap.m.MessageBox.error("No document selected (DocHubItemId is empty).");
+        sap.m.MessageBox.error(this._oBundle.getText("NoDocSelected"));
         return;
       }
 
@@ -507,7 +509,7 @@ sap.ui.define([
       }
 
       if (!sBillingId) {
-        sap.m.MessageBox.error("Billing Id not found.");
+        sap.m.MessageBox.error(this._oBundle.getText("NoBilling"));
         return;
       }
 
@@ -515,7 +517,7 @@ sap.ui.define([
       const sType = (oAuth?.getProperty("/tokenType") || "Bearer").trim();
       const sTok = (oAuth?.getProperty("/token") || "").trim();
       if (!sTok) {
-        sap.m.MessageBox.error("No auth token found.");
+        sap.m.MessageBox.error(this._oBundle.getText("NoToken"));
         return;
       }
 
@@ -532,7 +534,7 @@ sap.ui.define([
       };
 
       if (!oPayload.Recipients.length) {
-        sap.m.MessageBox.error("At least one recipient is required.");
+        sap.m.MessageBox.error(this._oBundle.getText("RecipientAmount"));
         return;
       }
 
@@ -558,17 +560,19 @@ sap.ui.define([
 
         const sText = await oResp.text();
         if (!oResp.ok) {
-          sap.m.MessageBox.error(`Send failed (${oResp.status}): ${sText}`);
+          sap.m.MessageBox.error(this._oBundle.getText("SendError") + ` (${oResp.status}): ${sText}`);
           return;
         }
 
-        sap.m.MessageToast.show("Invoice sent successfully.");
+        sap.m.MessageToast.show(this._oBundle.getText("SendSuccess"));
 
         this.onSavePanel(true);
 
       } catch (e) {
         oSend.setProperty("/canSend", true);
-        sap.m.MessageBox.error(`Send failed: ${e?.message || e}`);
+        sap.m.MessageBox.error(
+          this._oBundle.getText("SendError") + `: ${e?.message || e}`
+        );
       } finally {
         oView.setBusy(false);
       }
@@ -593,7 +597,7 @@ sap.ui.define([
       // Template Werte
       const sKey = String(oTemplate.getProperty("/currentInvoiceKey") || "").trim();
       const sBasePath = sKey ? ("/invoices/" + sKey) : null;
-      if (!sBasePath) { MessageToast.show("No current invoice key."); return; }
+      if (!sBasePath) { MessageToast.show(this._oBundle.getText("NoInvKey")); return; }
 
       const sSubject = (oTemplate.getProperty(sBasePath + "/subject") || "").trim();
       const sBody = (oTemplate.getProperty(sBasePath + "/body") || "").trim();
@@ -631,7 +635,7 @@ sap.ui.define([
       const oDoc = oDocCache?.getProperty("/doc");
       const sCachedId = oDocCache?.getProperty("/docId");
       if (!oDoc || sCachedId !== sDocId) {
-        MessageToast.show("Document not loaded yet. Please reload and try again.");
+        MessageToast.show(this._oBundle.getText("NoDocLoad"));
         return;
       }
 
@@ -671,14 +675,22 @@ sap.ui.define([
         const oSaved = await r.json().catch(() => null);
         if (oSaved && oDocCache) oDocCache.setProperty("/doc", oSaved);
         if (saveAfterSend == false) {
-          MessageToast.show("Data saved.");
+          MessageToast.show(this._oBundle.getText("DataSaved"));
           oDocCache.setProperty("/canSave", false);
         }
       } catch (e) {
-        MessageToast.show(`Save failed: ${e.message || e}`);
-        console.error("Template save failed:", e);
+        MessageToast.show(this._oBundle.getText("SaveError") + `: ${e.message || e}`);
+        console.error(this._oBundle.getText("TemplateSaveError"), e);
       }
     },
+    formatI18n: function (sKey) {
+      if (!sKey) {
+        return "";
+      }
+
+      const oBundle = this.getView().getModel("i18n").getResourceBundle();
+      return oBundle.getText(sKey);
+    }
 
 
 

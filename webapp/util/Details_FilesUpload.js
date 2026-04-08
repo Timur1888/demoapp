@@ -2,17 +2,21 @@ sap.ui.define([], function () {
   "use strict";
 
   return {
+    getBundle: function (oController) {
+      return oController.getOwnerComponent().getModel("i18n").getResourceBundle();
+    },
     // ---------------------------------------------------------------------------------------------------
     // UploadSet (Invoice) - sofort speichern bei Drop/Select
     // ---------------------------------------------------------------------------------------------------
     onInvoiceItemAdded: async function (oController, oEvent) {
+      const oBundle = this.getBundle(oController);
       const oItem = oEvent.getParameter("item"); // sap.m.upload.UploadSetItem
       if (!oItem) { return; }
 
       try {
         await this.persistUploadSetItems(oController, [oItem], "ccBT_Invoice", "uploadSetInvoice");
       } catch (e) {
-        console.error("Invoice afterItemAdded Fehler:", e);
+        console.error(oBundle.getText("UploadError"), e);
       }
     },
 
@@ -20,34 +24,36 @@ sap.ui.define([], function () {
     // UploadSet (Attachments) - sofort speichern bei Drop/Select
     // ---------------------------------------------------------------------------------------------------
     onAttachmentItemAdded: async function (oController, oEvent) {
+      const oBundle = this.getBundle(oController);
       const oItem = oEvent.getParameter("item");
       if (!oItem) { return; }
 
       try {
         await this.persistUploadSetItems(oController, [oItem], "ccBT_Attachment", "uploadSetAttachments");
       } catch (e) {
-        console.error("Attachment afterItemAdded Fehler:", e);
+        console.error(oBundle.getText("UploadError"), e);
       }
     },
 
     postAppendBlobs: async function (oController, aBlobPayload) {
+      const oBundle = this.getBundle(oController);
       const sDocId = this.getCurrentDocumentId(oController);
       if (!sDocId) throw new Error("Keine CurrentInvoice/Id gefunden.");
 
       const oAuth = oController.getOwnerComponent().getModel("auth");
       const sType = oAuth?.getProperty("/tokenType");
-      const sTok  = oAuth?.getProperty("/token");
+      const sTok = oAuth?.getProperty("/token");
 
       if (!sType || !sTok) {
-        throw new Error("Kein Token im auth-Model gefunden (Login/Token speichern prüfen).");
+        throw new Error(oBundle.getText("UploadError"));
       }
 
       //test
       const sUrl =
         `https://test.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
       //cci001
-            // const sUrl =
-        // `https://cci001.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
+      // const sUrl =
+      // `https://cci001.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
 
       const r = await fetch(sUrl, {
         method: "POST",
@@ -61,7 +67,7 @@ sap.ui.define([], function () {
 
       if (!r.ok) {
         const t = await r.text().catch(() => "");
-        throw new Error(`appendblobs failed (${r.status}): ${t}`);
+        throw new Error(` (${r.status}): ${t}`);
       }
 
       return await r.json();
@@ -81,6 +87,7 @@ sap.ui.define([], function () {
     },
 
     handleUploadSetItemRemoved: async function (oController, oEvent, sUploadSetId) {
+      const oBundle = this.getBundle(oController);
       const oUS = oController.byId(sUploadSetId);
       const oItem = oEvent.getParameter("item");
       if (!oItem) { return; }
@@ -115,7 +122,7 @@ sap.ui.define([], function () {
 
         this.rebuildLists(oController);
       } catch (e) {
-        console.error("UploadSet Remove Fehler:", e);
+        console.error(oBundle.getText("RemoveError"), e);
       } finally {
         oController.getView().setBusy(false);
       }
@@ -249,20 +256,21 @@ sap.ui.define([], function () {
     },
 
     postRemoveBlobs: async function (oController, aBlobIds) {
+      const oBundle = this.getBundle(oController);
       const sDocId = this.getCurrentDocumentId(oController);
-      if (!sDocId) throw new Error("Keine CurrentInvoice/Id gefunden.");
+      if (!sDocId) throw new Error(oBundle.getText("NoCurrentInvoice"));
 
       const oAuth = oController.getOwnerComponent().getModel("auth");
       const sType = oAuth?.getProperty("/tokenType");
-      const sTok  = oAuth?.getProperty("/token");
-      if (!sType || !sTok) throw new Error("Kein Token im auth-Model gefunden.");
+      const sTok = oAuth?.getProperty("/token");
+      if (!sType || !sTok) throw new Error(oBundle.getText("NoToken"));
 
       //test
       const sUrl =
         `https://test.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
       //cci001
-        //     const sUrl =
-        // `https://cci001.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
+      //     const sUrl =
+      // `https://cci001.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
 
       const r = await fetch(sUrl, {
         method: "POST",
@@ -278,13 +286,13 @@ sap.ui.define([], function () {
 
       if (!r.ok) {
         const t = await r.text().catch(() => "");
-        throw new Error(`removeblobs failed (${r.status}): ${t}`);
+        throw new Error(`(${r.status}): ${t}`);
       }
       return await r.json();
     },
 
     mergeBlobsKeepOrder: function (aOld, aFromResp) {
-      const oldArr  = Array.isArray(aOld) ? aOld : [];
+      const oldArr = Array.isArray(aOld) ? aOld : [];
       const respArr = Array.isArray(aFromResp) ? aFromResp : [];
 
       const mResp = new Map(respArr.map(b => [b?.Id, b]));
@@ -334,15 +342,16 @@ sap.ui.define([], function () {
     },
 
     openUploadSetItem: function (oController, oUSItem) {
+      const oBundle = this.getBundle(oController);
       const oCtx = oUSItem.getBindingContext && oUSItem.getBindingContext("backend");
       const oObj = oCtx && oCtx.getObject ? oCtx.getObject() : null;
 
-      const sUrl  = oObj?.DownloadUrl || oObj?.Link || oUSItem.getUrl?.() || "";
+      const sUrl = oObj?.DownloadUrl || oObj?.Link || oUSItem.getUrl?.() || "";
       const sName = oObj?.FileName || oUSItem.getFileName?.() || "File";
       const sMime = oObj?.MimeType || oUSItem.getMediaType?.() || "";
 
       if (!sUrl) {
-        console.warn("Keine URL zum Öffnen gefunden");
+        console.warn(oBundle.getText("NoURL"));
         return;
       }
 

@@ -347,11 +347,12 @@ _buildContainsiOrWildcardGroup: function (sQuery, aPaths) {
  * - "7000 - 8000"     -> dito
  */
 _buildNettoFilterForClarc: function (sInput, sPath) {
+  const oBundle = this.getBundle(oController);
   const raw = String(sInput || "").trim();
   if (!raw) return "";
 
   if (raw.includes("*")) {
-    sap.m.MessageToast.show("Ungültige Eingabe");
+    sap.m.MessageToast.show(oBundle.getText("InvalidInput"));
     return "__INVALID__";
   }
   // Helper: Zahl tolerant parsen (auch "1.500,00 €" -> 1500)
@@ -371,11 +372,11 @@ _buildNettoFilterForClarc: function (sInput, sPath) {
     const nFrom = parseNum(m[1]);
     const nTo   = parseNum(m[2]);
     if (nFrom === null || nTo === null) {
-      sap.m.MessageToast.show("Netto Value: Bitte zwei gültige Zahlen eingeben (z.B. 7000-8000).");
+      sap.m.MessageToast.show(oBundle.getText("NetValueRange"));
       return "__INVALID__";
     }
     if (nFrom > nTo) {
-      sap.m.MessageToast.show("Netto Value: 'Von' muss kleiner oder gleich 'Bis' sein.");
+      sap.m.MessageToast.show(oBundle.getText("NetValueFromTo"));
       return "__INVALID__";
     }
     return `(${sPath} ge ${nFrom} and ${sPath} le ${nTo})`;
@@ -383,7 +384,7 @@ _buildNettoFilterForClarc: function (sInput, sPath) {
   // Single value
   const n = parseNum(raw);
   if (n === null) {
-    sap.m.MessageToast.show("Netto Value: Bitte eine gültige Zahl eingeben (z.B. 1500) oder einen Bereich (z.B. 7000-8000).");
+    sap.m.MessageToast.show(oBundle.getText("NetValueRange2"));
     return "__INVALID__";
   }
 
@@ -550,6 +551,7 @@ _escapeOData: function (s) {
 
     //Helper für Datumvalidierung
     _validateDateDDMMYYYY: function(s) {
+      const oBundle = this.getBundle(oController);
       // erwartet "dd.MM.yyyy"
       var m = /^(\d{2})\.(\d{2})\.(\d{4})$/.exec(s || "");
       if (!m) {
@@ -562,14 +564,14 @@ _escapeOData: function (s) {
 
       var yNow = new Date().getFullYear();
 
-      if (mo < 1 || mo > 12) { return { ok: false, msg: "Month must be between 01 and 12." }; }
-      if (y > yNow) { return { ok: false, msg: "Year must not be greater than " + yNow + "." }; }
-      if (d < 1 || d > 31) { return { ok: false, msg: "Day must be between 01 and 31." }; }
+      if (mo < 1 || mo > 12) { return { ok: false, msg: oBundle.getText("MonthRange") }; }
+      if (y > yNow) { return { ok: false, msg: oBundle.getText("YearRange") + " " + yNow + "." }; }
+      if (d < 1 || d > 31) { return { ok: false, msg: oBundle.getText("DayRange") }; }
 
       // echte Datumskonsistenz (z.B. 31.02) prüfen
       var dt = new Date(y, mo - 1, d);
       if (dt.getFullYear() !== y || dt.getMonth() !== (mo - 1) || dt.getDate() !== d) {
-        return { ok: false, msg: "Invalid calendar date." };
+        return { ok: false, msg: oBundle.getText("InvalidCalDate") };
       }
 
       return { ok: true, date: dt };

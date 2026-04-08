@@ -2,6 +2,9 @@ sap.ui.define([], function () {
   "use strict";
 
   return {
+    getBundle: function (oController) {
+      return oController.getOwnerComponent().getModel("i18n").getResourceBundle();
+    },
     onIconTabSelect: function (oController, oEvent) {
       if (oEvent.getParameter("key") !== "history") {
         return;
@@ -25,6 +28,7 @@ sap.ui.define([], function () {
     },
 
     loadHistoryLogs: async function (oController, bForce, bClearImmediately) {
+      const oBundle = this.getBundle(oController);
       const oHistory = oController.getView().getModel("history");
       const oAuth = oController.getOwnerComponent().getModel("auth");
       if (!oHistory) { return; }
@@ -33,14 +37,14 @@ sap.ui.define([], function () {
       const bDoClear = (bClearImmediately !== undefined) ? !!bClearImmediately : bDoForce;
 
       const sType = oAuth?.getProperty("/tokenType");
-      const sTok  = oAuth?.getProperty("/token");
+      const sTok = oAuth?.getProperty("/token");
       const sDocId = oController._getCurrentDocumentId?.();
 
       if (!sDocId) {
         oHistory.setProperty("/lastDocId", "");
         oHistory.setProperty("/logs", []);
-        oHistory.setProperty("/billingId", "");     
-        oHistory.setProperty("/historyDocId", "");  
+        oHistory.setProperty("/billingId", "");
+        oHistory.setProperty("/historyDocId", "");
         return;
       }
 
@@ -58,7 +62,7 @@ sap.ui.define([], function () {
 
       if (!sTok) {
         oHistory.setProperty("/logs", [{
-          message: "No auth token available.",
+          message: oBundle.getText("NoToken"),
           date: new Date(),
           code: "",
           statusText: "Information",
@@ -97,7 +101,7 @@ sap.ui.define([], function () {
         const oDocCache = oController.getView().getModel("docCache");
         if (oDocCache) {
           oDocCache.setProperty("/docId", sDocId);
-          oDocCache.setProperty("/doc", oData);          
+          oDocCache.setProperty("/doc", oData);
           oDocCache.setProperty("/fetchedAt", Date.now());
         }
         // ✅ NEU: BillingId aus History-Response ablegen
@@ -134,7 +138,7 @@ sap.ui.define([], function () {
 
       } catch (err) {
         oHistory.setProperty("/logs", [{
-          message: `Failed to load history: ${err.message || err}`,
+          message: ` ${err.message || err}`,
           date: new Date(),
           code: "",
           statusText: "Warning",

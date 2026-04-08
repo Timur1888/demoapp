@@ -8,6 +8,7 @@ sap.ui.define([
     // PDF: Source vorbereiten (URL oder Base64 -> ObjectURL)
     // ==========================================================
     preparePdfSourceFromInvoice: async function (oController, oInvoice) {
+      const oBundle = this.getBundle(oController);
       const oModel = oController.getOwnerComponent().getModel("backend");
       if (!oModel) return;
 
@@ -76,7 +77,7 @@ sap.ui.define([
 
             const sText = await oResp.text();
             if (!oResp.ok) {
-              sap.m.MessageBox.error(`Generating of View Bolobs failed (${oResp.status}): ${sText}`);
+              sap.m.MessageBox.error(oBundle.getText("UploadError") + ` (${oResp.status}): ${sText}`);
               return;
             }
             const oJson = JSON.parse(sText);
@@ -93,24 +94,10 @@ sap.ui.define([
                 previewLink: vb?.Link || "",
                 kind: "pdf",
                 icon: "sap-icon://pdf-attachment",
-                openText: "Open PDF",
+                openText: oBundle.getText("OpenPDF"),
                 pageIndex: idx + 1
               });
             });
-
-            // // optional: wenn du danach ViewBlobs neu laden willst, hier machen.
-
-            // aItems.push({
-            //   sortId: b.SortId,
-            //   id: b.Id,
-            //   fileName: sFileName,
-            //   mimeType: b.MimeType || "",
-            //   fileLink: sLink,
-            //   previewLink: "",
-            //   kind: "pdf",
-            //   icon: "sap-icon://pdf-attachment",
-            //   openText: "Open PDF"
-            // });
           }
 
           continue;
@@ -126,7 +113,7 @@ sap.ui.define([
           previewLink: sLink,
           kind: "image",
           icon: "sap-icon://attachment-photo",
-          openText: "Open Image"
+          openText: oBundle.getText("OpenImg")
         });
       }
 
@@ -158,11 +145,12 @@ sap.ui.define([
 
     // PDF: Popup öffnen (wie UI5 Sample)
     onPdfPress: function (oController) {
+      const oBundle = this.getBundle(oController);
       const oModel = oController.getOwnerComponent().getModel("backend");
       const sSource = oModel.getProperty("/CurrentInvoice/PdfSource");
 
       if (!sSource) {
-        console.warn("Keine PDF-Quelle vorhanden (/CurrentInvoice/PdfSource ist leer).");
+        console.warn(oBundle.getText("NoPDFSource"));
         return;
       }
 
@@ -173,12 +161,13 @@ sap.ui.define([
     },
 
     onFilePress: function (oController) {
+      const oBundle = this.getBundle(oController);
       const oModel = oController.getOwnerComponent().getModel("backend");
       const sKind = oModel.getProperty("/CurrentInvoice/SelectedFileKind");
       const sSource = oModel.getProperty("/CurrentInvoice/SelectedFileSource");
 
       if (!sSource) {
-        console.warn("Keine Quelle vorhanden.");
+        console.warn(oBundle.getText("NoSource"));
         return;
       }
 
@@ -235,11 +224,11 @@ sap.ui.define([
     },
 
     onClose: function (oController, onSave) {
-
+      const oBundle = this.getBundle(oController);
       if (onSave === true) {
 
         sap.m.MessageBox.confirm(
-          "Are you sure you want to leave without saving?",
+          oBundle.getText("UploadError"),
           {
             title: "Confirm",
             actions: ["Okay", "Cancel"],

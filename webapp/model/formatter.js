@@ -17,12 +17,12 @@ sap.ui.define([
         },
         // Icon je nach Wert
         formatDeliveryMethodIcon: function (sMethod) {
-        switch (sMethod) {
-            case "ccDM_Email":         return "sap-icon://email";
-            case "ccDM_PostalService": return "sap-icon://print";
-            case "ccDM_EGatewayProvider": return "sap-icon://world";
-            default:                  return "";
-        }
+            switch (sMethod) {
+                case "ccDM_Email": return "sap-icon://email";
+                case "ccDM_PostalService": return "sap-icon://print";
+                case "ccDM_EGatewayProvider": return "sap-icon://world";
+                default: return "";
+            }
         },
 
         // --- Formatter für TransferFormat ccBF_* -> * ---
@@ -76,27 +76,27 @@ sap.ui.define([
                 case "ccDS_UserAction":
                     return "sap-icon://action";
                 case "ccDS_Error":
-                    return "sap-icon://error";            
+                    return "sap-icon://error";
 
                 default:
                     return "sap-icon://question-mark";
-                }
+            }
         },
 
         formatStatusState: function (sState) {
-        switch (sState) {
-            case "ccDS_Finished":
-            return sap.ui.core.ValueState.Success;
+            switch (sState) {
+                case "ccDS_Finished":
+                    return sap.ui.core.ValueState.Success;
 
-            case "ccDS_UserAction":
-            return sap.ui.core.ValueState.Warning;
+                case "ccDS_UserAction":
+                    return sap.ui.core.ValueState.Warning;
 
-            case "ccDS_Error":
-            return sap.ui.core.ValueState.Error;
+                case "ccDS_Error":
+                    return sap.ui.core.ValueState.Error;
 
-            default:
-            return sap.ui.core.ValueState.None;
-        }
+                default:
+                    return sap.ui.core.ValueState.None;
+            }
         },
 
 
@@ -116,7 +116,7 @@ sap.ui.define([
 
         // --- Formatter für DeliveryMode ccDM_* -> * ---
         formatDeliveryModeState: function (sDelMethod) {
-                switch (sDelMethod) {
+            switch (sDelMethod) {
                 case "ccDS_Finished":
                     return sap.ui.core.ValueState.Success;
                 case "ccDS_UserAction":
@@ -124,6 +124,6 @@ sap.ui.define([
                 default:
                     return sap.ui.core.ValueState.None;
             };
-        },
+        }
     };
 });
