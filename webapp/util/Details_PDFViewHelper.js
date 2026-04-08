@@ -4,7 +4,10 @@ sap.ui.define([
   "use strict";
 
   return {
-    // ==========================================================
+    getBundle: function (oController) {
+      return oController.getOwnerComponent().getModel("i18n").getResourceBundle();
+    },
+    // =====================================F=====================
     // PDF: Source vorbereiten (URL oder Base64 -> ObjectURL)
     // ==========================================================
     preparePdfSourceFromInvoice: async function (oController, oInvoice) {
@@ -57,7 +60,7 @@ sap.ui.define([
             const sAuthHeader =
               ((oAuth?.getProperty("/tokenType") || "Bearer").trim() + " " + (oAuth?.getProperty("/token") || "").trim()).trim();
 
-            const sDocId = oModel.getProperty("/CurrentInvoice/Id"); 
+            const sDocId = oModel.getProperty("/CurrentInvoice/Id");
             //test
             const sUrl = `https://test.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
             //cci001
@@ -66,10 +69,10 @@ sap.ui.define([
             const oResp = await fetch(sUrl, {
               method: "POST",
               credentials: "include",
-              headers: { 
+              headers: {
                 "Content-Type": "application/json",
                 "Authorization": sAuthHeader,
-               },
+              },
               body: JSON.stringify({
                 Limit: 0
               })
