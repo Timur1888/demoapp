@@ -30,14 +30,11 @@ sap.ui.define([], function () {
     loadHistoryLogs: async function (oController, bForce, bClearImmediately) {
       const oBundle = this.getBundle(oController);
       const oHistory = oController.getView().getModel("history");
-      const oAuth = oController.getOwnerComponent().getModel("auth");
       if (!oHistory) { return; }
 
       const bDoForce = !!bForce;
       const bDoClear = (bClearImmediately !== undefined) ? !!bClearImmediately : bDoForce;
 
-      const sType = oAuth?.getProperty("/tokenType");
-      const sTok = oAuth?.getProperty("/token");
       const sDocId = oController._getCurrentDocumentId?.();
 
       if (!sDocId) {
@@ -60,30 +57,15 @@ sap.ui.define([], function () {
       // Cache markieren (damit parallele Calls nicht doppelt feuern)
       oHistory.setProperty("/lastDocId", sDocId);
 
-      if (!sTok) {
-        oHistory.setProperty("/logs", [{
-          message: oBundle.getText("NoToken"),
-          date: new Date(),
-          code: "",
-          statusText: "Information",
-          statusState: "Information"
-        }]);
-        oHistory.setProperty("/billingId", ""); // ✅ NEU
-        return;
-      }
 
       oHistory.setProperty("/busy", true);
 
       try {
-        //test
-        const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
-        //cci001
-        // const sBase = "https://cci001.app.clarc.com:443/application/api/v1/documenthub";
+        const sBase = "/application/api/v1/documenthub";
         const sUrl1 = `${sBase}/document(${encodeURIComponent(sDocId)})`;
         const sUrl2 = `${sBase}/document/${encodeURIComponent(sDocId)}`;
 
         const oHeaders = {
-          "Authorization": `${sType} ${sTok}`,
           "Accept": "application/json"
         };
 

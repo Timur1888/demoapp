@@ -36,31 +36,18 @@ sap.ui.define([], function () {
     },
 
     postAppendBlobs: async function (oController, aBlobPayload) {
-      const oBundle = this.getBundle(oController);
       const sDocId = this.getCurrentDocumentId(oController);
       if (!sDocId) throw new Error("Keine CurrentInvoice/Id gefunden.");
 
-      const oAuth = oController.getOwnerComponent().getModel("auth");
-      const sType = oAuth?.getProperty("/tokenType");
-      const sTok = oAuth?.getProperty("/token");
 
-      if (!sType || !sTok) {
-        throw new Error(oBundle.getText("UploadError"));
-      }
-
-      //test
       const sUrl =
-        `https://test.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
-      //cci001
-      // const sUrl =
-      // `https://cci001.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
+        `/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/appendblobs`;
 
       const r = await fetch(sUrl, {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `${sType} ${sTok}`
         },
         body: JSON.stringify({ Blobs: aBlobPayload })
       });
@@ -259,25 +246,14 @@ sap.ui.define([], function () {
       const oBundle = this.getBundle(oController);
       const sDocId = this.getCurrentDocumentId(oController);
       if (!sDocId) throw new Error(oBundle.getText("NoCurrentInvoice"));
-
-      const oAuth = oController.getOwnerComponent().getModel("auth");
-      const sType = oAuth?.getProperty("/tokenType");
-      const sTok = oAuth?.getProperty("/token");
-      if (!sType || !sTok) throw new Error(oBundle.getText("NoToken"));
-
-      //test
       const sUrl =
-        `https://test.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
-      //cci001
-      //     const sUrl =
-      // `https://cci001.app.clarc.com:443/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
+        `/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/removeblobs`;
 
       const r = await fetch(sUrl, {
         method: "POST",
         credentials: "include",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `${sType} ${sTok}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           Blobs: aBlobIds

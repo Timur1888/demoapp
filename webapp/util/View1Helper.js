@@ -31,11 +31,6 @@ sap.ui.define([
 _loadInvoicesServer: async function (mOpts) {
   mOpts = mOpts || {};
 
-  const oAuth    = this.getOwnerComponent().getModel("auth");
-  // Token
-  const sType = (oAuth?.getProperty("/tokenType") || "Bearer").trim();
-  const sTok  = (oAuth?.getProperty("/token") || "").trim();
-
   const oBackend = this.getOwnerComponent().getModel("backend");
   if (!oBackend) {
     throw new Error('Model "backend" not found');
@@ -48,10 +43,6 @@ _loadInvoicesServer: async function (mOpts) {
   const bAppend  = !!mOpts.append;
   const sFilter  = (mOpts.filter || "").trim();           // kompletter Filter (base + user)
   const sOrderBy = (mOpts.orderBy || "CreationDate desc");
-  //test
-  const sBaseUrl = (mOpts.baseUrl || "https://test.app.clarc.com");
-  //cci001
-  // const sBaseUrl = (mOpts.baseUrl || "https://cci001.app.clarc.com");
   const sPath    = (mOpts.path || "/application/api/v1/documenthub/document");
 
   // Wichtig: Blobs/MetaData sind oft groß -> ggf. für Liste abwählen
@@ -99,14 +90,13 @@ const sSelect = [
       mParams["$filter"] = sFilter;
     }
 
-    const sUrl = this._buildUrl(sBaseUrl + sPath, mParams);
+    const sUrl = this._buildUrl(sPath, mParams);
 
     const r = await fetch(sUrl, {
       method: "GET",
       credentials: "include",
       headers: {
-        "Authorization": `${sType} ${sTok}`
-        // Auth i.d.R. über Approuter/Destination
+        "Accept": "application/json"
       }
     });
 

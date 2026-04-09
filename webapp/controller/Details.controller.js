@@ -515,7 +515,6 @@ sap.ui.define([
     onSendInvoice: async function () {
       const oView = this.getView();
       const oSend = oView.getModel("send");
-      const oAuth = this.getOwnerComponent().getModel("auth");
       const oHistory = oView.getModel("history");
       const oModel = this.getOwnerComponent().getModel("backend");
       const oTemplate = oView.getModel("template");
@@ -561,14 +560,6 @@ sap.ui.define([
         return;
       }
 
-      // Token
-      const sType = (oAuth?.getProperty("/tokenType") || "Bearer").trim();
-      const sTok = (oAuth?.getProperty("/token") || "").trim();
-      if (!sTok) {
-        sap.m.MessageBox.error(this._oBundle.getText("NoToken"));
-        return;
-      }
-
       // ---------------------------
       // Payload (ohne Email/Value)
       // ---------------------------
@@ -586,12 +577,8 @@ sap.ui.define([
         return;
       }
 
-      //Test
       const sUrl =
-        `https://test.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
-      //cci001
-      // const sUrl =
-      // `https://cci001.app.clarc.com:443/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
+        `/application/api/v1/bpm/billing(${encodeURIComponent(sBillingId)})/sendinvoice`;
       try {
         oView.setBusy(true);
 
@@ -601,7 +588,6 @@ sap.ui.define([
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": `${sType} ${sTok}`
           },
           body: JSON.stringify(oPayload)
         });
@@ -631,16 +617,12 @@ sap.ui.define([
       this.onSavePanel(false);
     },
     onSavePanel: async function (saveAfterSend) {
-      const oAuth = this.getOwnerComponent().getModel("auth");
       const oTemplate = this.getView().getModel("template");
       const oDocCache = this.getView().getModel("docCache");
       const oSend = this.getView().getModel("send");
-
-      const sType = oAuth?.getProperty("/tokenType");
-      const sTok = oAuth?.getProperty("/token");
       const sDocId = this._getCurrentDocumentId?.();
 
-      if (!sTok || !sDocId || !oTemplate) { /* deine Toasts */ return; }
+      if (!sDocId || !oTemplate) { /* deine Toasts */ return; }
 
       // Template Werte
       const sKey = String(oTemplate.getProperty("/currentInvoiceKey") || "").trim();
@@ -697,15 +679,12 @@ sap.ui.define([
       oFull.MetaData.Object.Data.Basics.TransferFormat = sTransferFormat;
       oFull.MetaData.Object.Data.Basics.DeliveryMethod = sDeliveryMethod;
       oFull.MetaData.Object.Data.Basics.Recipient.Email[0].Address = sRecipient;
-      //Test
-      const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
-      //cci001
-      // const sBase = "https://cci001.app.clarc.com:443/application/api/v1/documenthub";
+
+      const sBase = "/application/api/v1/documenthub";
       const sUrl1 = `${sBase}/document(${encodeURIComponent(sDocId)})`;
       const sUrl2 = `${sBase}/document/${encodeURIComponent(sDocId)}`;
 
       const oHeaders = {
-        "Authorization": `${sType} ${sTok}`,
         "Accept": "application/json",
         "Content-Type": "application/json"
       };

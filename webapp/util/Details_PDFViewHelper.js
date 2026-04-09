@@ -55,23 +55,15 @@ sap.ui.define([
               });
             });
           } else {
-            // ✅ hier darfst du jetzt await nutzen
-            const oAuth = oController.getOwnerComponent().getModel("auth");
-            const sAuthHeader =
-              ((oAuth?.getProperty("/tokenType") || "Bearer").trim() + " " + (oAuth?.getProperty("/token") || "").trim()).trim();
-
             const sDocId = oModel.getProperty("/CurrentInvoice/Id");
             //test
-            const sUrl = `https://test.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
-            //cci001
-            // const sUrl = `https://cci001.app.clarc.com/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
+            const sUrl = `/application/api/v1/documenthub/document(${encodeURIComponent(sDocId)})/generateviewblobs`;
 
             const oResp = await fetch(sUrl, {
               method: "POST",
               credentials: "include",
               headers: {
                 "Content-Type": "application/json",
-                "Authorization": sAuthHeader,
               },
               body: JSON.stringify({
                 Limit: 0

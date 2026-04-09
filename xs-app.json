@@ -3,13 +3,6 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^<apply-service-segment-path>/(.*)$",
-      "target": "<apply-service-segment-path>/$1",
-      "destination": "CLARC_BACKEND",
-      "authenticationType": "none",
-      "csrfProtection": false
-    },
-    {
       "source": "^/resources/(.*)$",
       "target": "/resources/$1",
       "authenticationType": "none",
