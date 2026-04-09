@@ -81,7 +81,7 @@ sap.ui.define([
     },
 
     onValueChange: function () {
-      this.getView().getModel("docCache").setProperty("/canSave", true);
+       this.getView().getModel("docCache").setProperty("/canSave", true);
     },
 
     // ------------------------------- Edit Templates -------------------------------
@@ -300,8 +300,10 @@ sap.ui.define([
         console.error("Model 'backend' nicht gefunden");
         return;
       }
+
       this.getView().getModel("docCache").setProperty("/canSave", false);
-      const sInvoiceId = String(oEvent.getParameter("arguments").invoiceId).trim();
+
+      const sInvoiceId = String(oEvent.getParameter("arguments").invoiceId || "").trim();
 
       const aInvoices = oModel.getProperty("/value") || [];
       const sWanted = String(sInvoiceId || "").trim();
@@ -322,6 +324,7 @@ sap.ui.define([
         return;
       }
 
+      // Aktuelle Rechnung ins Backend-Model setzen
       oModel.setProperty("/CurrentInvoice", oInvoice);
 
       this.getView().bindElement({
@@ -329,39 +332,84 @@ sap.ui.define([
         model: "backend"
       });
 
-      // Recipient name aus Backend holen
-      var oSend = this.getView().getModel("send");
-      var oBackend = this.getOwnerComponent().getModel("backend");
-      oSend.setProperty("/recipient", oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/Recipient/Email/0/Address"));
-      //Transfer Format
-      const sTransFormat = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/TransferFormat");
-      var mMap = { "ccBF_PDF": "pdf", "ccBF_XInvoice": "xrechnung", "ccBF_FacturX": "zugferd", "ccBF_Paper": "paper" };// oder Mapping, wenn Backend andere Codes liefert:
-      oSend.setProperty("/transferFormat", mMap[sTransFormat] || "pdf");
-      this._sOldTransferFormat = this.byId("transF").getSelectedItem()?.getText(); //fürs Save den Wert merken
-      //Delivery Method
-      const sDelivMethod = oBackend.getProperty("/CurrentInvoice/MetaData/Object/Data/Basics/DeliveryMethod");
-      mMap = { "ccDM_Email": "email", "ccDM_PostalService": "post", "ccDM_EGatewayProvider": "eGateWay" };
-      oSend.setProperty("/deliveryMethod", mMap[sDelivMethod] || "email")
-      this.sOldDeliveryMethod = this.byId("delMeth").getSelectedItem()?.getText();
-      oSend.setProperty("/canSend", true); //Send-Button klickbar machen
+      // Wichtig: Edit-Modelle IMMER frisch aus aktueller Rechnung neu setzen,
+      // damit ungespeicherte Werte aus vorherigem Öffnen verschwinden
+      this._resetSendModelFromInvoice(oInvoice);
 
-
-      //Template an die Rechnung binden
       if (sInvoiceId) {
-        this._ensureTemplateForInvoice(sInvoiceId);
-        this._bindTemplateContexts(); // Panel + Dialog auf diese Rechnung binden
+        this._resetTemplateForInvoice(sInvoiceId, oInvoice);
+        this._bindTemplateContexts();
       } else {
-        console.warn("Keine Rechnung mit ID", sInvoiceId, "gefunden – Template bleibt global.");
+        console.warn("Keine Rechnung mit ID", sInvoiceId, "gefunden – Template bleibt leer.");
       }
 
-      // ✅ Overview/Preview aktualisieren
+      // alte Vergleichswerte nach Reset merken
+      this._sOldTransferFormat = this.getView().getModel("send").getProperty("/transferFormat");
+      this.sOldDeliveryMethod = this.getView().getModel("send").getProperty("/deliveryMethod");
+
+      // Overview / Preview aktualisieren
       this._refreshPanel();
 
-      // ✅ HISTORY: Sofort laden beim Öffnen/Wechseln
+      // History sofort neu laden
       this._loadHistoryLogs(true);
 
-      // ✅ UploadSets/Listen neu aufbauen
+      // UploadSets / Listen neu aufbauen
       this._rebuildLists();
+    },
+
+    _resetTemplateForInvoice: function (sInvoiceKey, oInvoice) {
+      const oModel = this.getView().getModel("template");
+      sInvoiceKey = String(sInvoiceKey || "").trim();
+      if (!oModel || !sInvoiceKey || !oInvoice) { return; }
+
+      oModel.setProperty("/currentInvoiceKey", sInvoiceKey);
+
+      const sPath = "/invoices/" + sInvoiceKey;
+
+      oModel.setProperty(sPath, {
+        subject: oInvoice?.MetaData?.Object?.Data?.Subject || "",
+        body: oInvoice?.MetaData?.Object?.Data?.AdditionalInformation || "",
+        selectedLanguageKey: "en"
+      });
+    },
+
+    _resetSendModelFromInvoice: function (oInvoice) {
+      const oSend = this.getView().getModel("send");
+      if (!oSend || !oInvoice) { return; }
+
+      const sRecipient =
+        oInvoice?.MetaData?.Object?.Data?.Basics?.Recipient?.Email?.[0]?.Address || "";
+
+      const sTransFormat =
+        oInvoice?.MetaData?.Object?.Data?.Basics?.TransferFormat || "";
+
+      const sDelivMethod =
+        oInvoice?.MetaData?.Object?.Data?.Basics?.DeliveryMethod || "";
+
+      const mTransferMap = {
+        "ccBF_PDF": "pdf",
+        "ccBF_XInvoice": "xrechnung",
+        "ccBF_FacturX": "zugferd",
+        "ccBF_Paper": "paper"
+      };
+
+      const mDeliveryMap = {
+        "ccDM_Email": "email",
+        "ccDM_PostalService": "post",
+        "ccDM_EGatewayProvider": "eGateWay"
+      };
+
+      oSend.setData({
+        transferFormat: mTransferMap[sTransFormat] || "pdf",
+        deliveryMethod: mDeliveryMap[sDelivMethod] || "email",
+        recipient: sRecipient,
+        cc: "",
+        bcc: "",
+        canSend: true
+      });
+
+      this._sOldTransferFormat = oSend.getProperty("/transferFormat");
+      this.sOldDeliveryMethod = oSend.getProperty("/deliveryMethod");
     },
 
     // ==========================================================
@@ -647,7 +695,7 @@ sap.ui.define([
       oFull.MetaData.Object.Data.Subject = sSubject;
       oFull.MetaData.Object.Data.AdditionalInformation = sBody;
       oFull.MetaData.Object.Data.Basics.TransferFormat = sTransferFormat;
-      oFull.MetaData.Object.Data.Basics.deliveryMethod = sDeliveryMethod;
+      oFull.MetaData.Object.Data.Basics.DeliveryMethod = sDeliveryMethod;
       oFull.MetaData.Object.Data.Basics.Recipient.Email[0].Address = sRecipient;
       //Test
       const sBase = "https://test.app.clarc.com:443/application/api/v1/documenthub";
@@ -690,7 +738,8 @@ sap.ui.define([
 
       const oBundle = this.getView().getModel("i18n").getResourceBundle();
       return oBundle.getText(sKey);
-    }
+    },
+
 
 
 

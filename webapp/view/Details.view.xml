@@ -82,8 +82,8 @@
                            </Select>
 
                            <Input id="inpRecipient" placeholder="Receiver" class="sapUiSmallMarginBottom" value="{send>/recipient}" liveChange=".onValueChange"/>
-                           <Input id="inpCc" placeholder="CC" class="sapUiSmallMarginBottom" value="{send>/cc}" liveChange=".onValueChange"/>
-                           <Input id="inpBcc" placeholder="BCC" class="sapUiSmallMarginBottom" value="{send>/bcc}" liveChange=".onValueChange"/>
+                           <Input id="inpCc" placeholder="CC" class="sapUiSmallMarginBottom" value="{send>/cc}"/>
+                           <Input id="inpBcc" placeholder="BCC" class="sapUiSmallMarginBottom" value="{send>/bcc}"/>
                         </VBox>
                         <!-- ================== Templates ================== -->
                         <Title id="titleTemplates" text="{i18n>Templates}" level="H4" class="sapUiMediumMarginTop" />
