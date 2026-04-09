@@ -231,7 +231,7 @@ sap.ui.define([
       if (onSave === true) {
 
         sap.m.MessageBox.confirm(
-          oBundle.getText("UploadError"),
+          oBundle.getText("ExitWarrning"),
           {
             title: "Confirm",
             actions: ["Okay", "Cancel"],
