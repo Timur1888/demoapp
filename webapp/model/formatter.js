@@ -77,6 +77,8 @@ sap.ui.define([
                     return "sap-icon://action";
                 case "ccDS_Error":
                     return "sap-icon://error";
+                case "ccDS_Deleted":
+                    return "sap-icon://decline";
 
                 default:
                     return "sap-icon://question-mark";
@@ -93,6 +95,9 @@ sap.ui.define([
 
                 case "ccDS_Error":
                     return sap.ui.core.ValueState.Error;
+
+                case "ccDS_Deleted":
+                    return sap.ui.core.ValueState.Warning;
 
                 default:
                     return sap.ui.core.ValueState.None;
