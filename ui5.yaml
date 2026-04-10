@@ -17,7 +17,7 @@ server:
           url: https://ui5.sap.com
         backend:
           - path: /application
-            destination: TEST_DEVELOP_Auth2Credentials
+            destination: TEST_DEVELOPMENT_Auth2Credential
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

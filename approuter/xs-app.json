@@ -3,11 +3,10 @@
   "authenticationMethod": "route",
   "routes": [
     {
-      "source": "^/backend/(.*)$",
-      "target": "/$1",
-      "destination": "CLARC_BACKEND",
-      "authenticationType": "none",
-      "csrfProtection": false
+      "source": "^/application/(.*)$",
+      "target": "/application/$1",
+      "destination": "CCI001_PRODUCTIVE_Auth2Credential",
+      "authenticationType": "xsuaa"
     },
     {
       "source": "^/resources/(.*)$",
@@ -20,13 +19,6 @@
       "target": "/test-resources/$1",
       "authenticationType": "none",
       "destination": "ui5"
-    },
-    {
-      "source": "^/keyuser/(.*)$",
-      "target": "$1",
-      "service": "com.sap.ui.flex.cf.keyuser",
-      "endpoint": "keyuser",
-      "authenticationType": "xsuaa"
     },
     {
       "source": "^(.*)$",
