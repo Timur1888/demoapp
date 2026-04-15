@@ -12,7 +12,7 @@
             <f:DynamicPageTitle id="dptTitle">
 
                 <f:heading>
-                    <svm:SmartVariantManagement id="svm" showExecuteOnSelection="true" persistencyKey="BillingFilterBarVariant"/>
+                    <svm:SmartVariantManagement id="svm" persistencyKey="BillingFilterBarVariant" showExecuteOnSelection="true" useFavorites="true" />
                 </f:heading>
                 <f:expandedContent>
                     <Label id="expandedLabel" text="{i18n>variantsFilters}" />
@@ -37,7 +37,7 @@
                     <Button id="clFilt" text="{i18n>clearFilters}" type="Transparent" press=".onClearFilters"/>
 
                     <!-- Hier ist der Bereich wie im Screenshot (Filter + Search) -->
-                    <fb:FilterBar id="filterbar" persistencyKey="myPersKey" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
+                    <fb:FilterBar id="filterbar" persistencyKey="BillingFilterBarVariant" useToolbar="false" search=".onSearch" filterChange=".onFilterChange" afterVariantLoad=".onAfterVariantLoad">
                         <fb:filterGroupItems>
 
                             <!-- Globale Suche  -->
@@ -140,28 +140,28 @@
 
                             <columns>
                                 <!-- ====== Status ====== -->
-                                <Column id="colStatus"  headerMenu="columnHeaderMenu" hAlign="Center" width="55px">
+                                <Column id="colStatus" headerMenu="columnHeaderMenu" hAlign="Center" width="55px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="State" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColStatus" text="{i18n>State}"/>
                                 </Column>
                                 <!-- ====== Delivery Mode ====== -->
-                                <Column id="colDeliveryMode"  headerMenu="columnHeaderMenu" hAlign="Center" width="105px">
+                                <Column id="colDeliveryMode" headerMenu="columnHeaderMenu" hAlign="Center" width="105px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="Process/DeliveryPlan/ExecutionMode" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColEliveryMode" text="{i18n>DelMode}"/>
                                 </Column>
                                 <!-- ====== Recipient Name ====== -->
-                                <Column id="colRecipientName"  headerMenu="columnHeaderMenu" hAlign="Center" width="115px">
+                                <Column id="colRecipientName" headerMenu="columnHeaderMenu" hAlign="Center" width="115px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Recipient/Name" writeToDom="false"/>
                                     </customData>
                                     <Text id="txtColRecipientName" text="{i18n>RecName}"/>
                                 </Column>
                                 <!-- ====== E-Mail ====== -->
-                                <Column id="colRecipientEmail"  headerMenu="columnHeaderMenu" hAlign="Center" width="115px">
+                                <Column id="colRecipientEmail" headerMenu="columnHeaderMenu" hAlign="Center" width="115px">
                                     <customData>
                                         <core:CustomData key="sortKey" value="MetaData/Object/Data/Basics/Recipient/Email/0/Address" writeToDom="false"/>
                                     </customData>
@@ -231,7 +231,7 @@
                                     <Text id="txtColFacturaDate" text="{i18n>FacDate}"/>
                                 </Column>
                                 <!-- ====== Creation Datee ====== -->
-                                <Column id="colCreationDate" headerMenu="columnHeaderMenu"  width="108px" hAlign="Center">
+                                <Column id="colCreationDate" headerMenu="columnHeaderMenu" width="108px" hAlign="Center">
                                     <customData>
                                         <core:CustomData key="sortKey" value="History/Created/Date/$date" writeToDom="false"/>
                                     </customData>

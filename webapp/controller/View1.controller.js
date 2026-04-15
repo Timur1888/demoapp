@@ -63,60 +63,53 @@ sap.ui.define([
 
         onInit: function () {
             var oView = this.getView();
-            //------------Modelle-----------------------
-            //Backend-Model
+
+            this._oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+            // ------------ Modelle -----------------------
             var oBackend = this.getOwnerComponent().getModel("backend");
             oView.setModel(oBackend, "backend");
 
-            //--------------------------------------------------
+            // ----------- Filter / Variant Management ----
+            this.oSmartVariantManagement = this.byId("svm");
+            this.oExpandedLabel = this.byId("expandedLabel");
+            this.oSnappedLabel = this.byId("snappedLabel");
+            this.oFilterBar = this.byId("filterbar");
+            this.oTable = this.byId("tblBilling");
 
-            //-----------FilterBar----------------------
+            // Custom callbacks binden
             this.applyData = this.applyData.bind(this);
             this.fetchData = this.fetchData.bind(this);
             this.getFiltersWithValues = this.getFiltersWithValues.bind(this);
 
-            //Controls einmal holen und als Property merken
-            this.oSmartVariantManagement = this.getView().byId("svm");
-            this.oExpandedLabel = this.getView().byId("expandedLabel");
-            this.oSnappedLabel = this.getView().byId("snappedLabel");
-
-            // XML: <filterModel:FilterBar id="filterbar" ...>
-            this.oFilterBar = this.getView().byId("filterbar");
-
-            this.oTable = this.getView().byId("tblBilling");
-
-            // FilterBar mit Variant-Mechanik verbinden
+            // Custom Variant Handling an FilterBar hängen
             this.oFilterBar.registerFetchData(this.fetchData);
             this.oFilterBar.registerApplyData(this.applyData);
             this.oFilterBar.registerGetFiltersWithValues(this.getFiltersWithValues);
 
-            // SmartVariantManagement “personalizable” machen
-            var oPersInfo = new PersonalizableInfo({
-                type: "filterBar",
+            // WICHTIG:
+            // keinen reservierten Typ wie "filterBar" verwenden
+            var oPersInfo = new sap.ui.comp.smartvariants.PersonalizableInfo({
+                type: "billingFilter",
                 keyName: "persistencyKey",
-                dataSource: "",
                 control: this.oFilterBar
             });
+
             this.oSmartVariantManagement.addPersonalizableControl(oPersInfo);
-            //--------------------------------------------------
 
-            this._oBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+            this._bSvmReady = false;
+            this.oSmartVariantManagement.initialise(function () {
+                this._bSvmReady = true;
+            }.bind(this), this.oFilterBar);
 
-            //--------------------Sortierung--------------------- 
+            // -------------------- Sortierung ---------------------
             this._aColumnMenus = [];
             this._fnItemsBindingChange = null;
             this._mQuickSortItemsByKey = Object.create(null);
             this._oSortState = { path: "", descending: false };
 
-            this._attachPerColumnMenus().then(() => {
-                this._syncQuickSortUI(); // wenn Variant schon Sort gesetzt hat
-            });
-            this._oSortState = { path: "", descending: false };
-            //-----------------------------------------------------
-            this._bSvmReady = false;
-            this.oSmartVariantManagement.initialise(function () {
-                this._bSvmReady = true;
-            }.bind(this), this.oFilterBar);
+            this._attachPerColumnMenus().then(function () {
+                this._syncQuickSortUI();
+            }.bind(this));
         },
 
         //::::::::::::::::::::::::::::::::::::::::::::::SOTRIERUNG:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -173,9 +166,9 @@ sap.ui.define([
             // Wenn nichts gesetzt → erste 40 Rechnungen holen
             if (!sUserFilter) {
                 try {
-                    
+
                     const first40BillingsURL = "/application/api/v1/documenthub/document?$select=Id,History,Rights,State,Process.DeliveryPlan.ExecutionMode,MetaData.Object.Data.Basics.Recipient.Name,MetaData.Object.Data.Basics.Recipient.Email,MetaData.Object.Data.Basics.Number.Value,MetaData.Object.Data.Type,MetaData.Object.Data.SubType,MetaData.Object.Data.Amounts.Net.Value,MetaData.Object.Data.Amounts.Gross.Value,MetaData.Object.Data.Amounts.Currency.Value,MetaData.OriginSystem,MetaData.Object.Data.BusinessPartners,History.Created.Date,MetaData.Object.Data.Basics.Date.Value,MetaData.Object.Data.Basics.SendDate,MetaData.Object.Data.Basics.TransferFormat,MetaData.Object.Data.Basics.DeliveryMethod,MetaData.Object.Data.BusinessPartners,MetaData.Blobs,MetaData&$filter=(Process/Manager/Type%20eq%20%27ccPM_Billing%27)&$top=40&$orderby=CreationDate%20desc";
-                  
+
                     var oAuthModel = this.getOwnerComponent().getModel("auth");
                     // 2) Mehrere Datenquellen parallel laden
                     const [billingResp] = await Promise.all([
@@ -184,11 +177,11 @@ sap.ui.define([
                             credentials: "include",
                             headers: {
                                 "Accept": "application/json"
-                                }
+                            }
                         })
                     ]);
                     if (!billingResp.ok) {
-                        console.error( this._oBundle.getText("BillingRequestError"), billingResp.status);
+                        console.error(this._oBundle.getText("BillingRequestError"), billingResp.status);
                         return;
                     }
 
@@ -319,7 +312,6 @@ sap.ui.define([
 
 
         //spiele den im Variant gespeicherten Filterzustand wieder ein
-        //spiele den im Variant gespeicherten Filterzustand wieder ein
         applyData: function (aData) {
             // Filter
             aData.forEach(function (oDataObject) {
@@ -442,10 +434,10 @@ sap.ui.define([
             }
 
             if (aFiltersWithValues.length === 1) {
-                return aFiltersWithValues.length + this._oBundle.getText("FilterActive") + aFiltersWithValues.join(", ");
+                return aFiltersWithValues.length + " " + this._oBundle.getText("FilterActives") + aFiltersWithValues.join(", ");
             }
 
-            return aFiltersWithValues.length + this._oBundle.getText("FilterActive") + aFiltersWithValues.join(", ");
+            return aFiltersWithValues.length + " " + this._oBundle.getText("FilterActives") + aFiltersWithValues.join(", ");
         },
 
         getFormattedSummaryTextExpanded: function () {
@@ -455,15 +447,15 @@ sap.ui.define([
                 return this._oBundle.getText("NoFilters");
             }
 
-            var sText = aFiltersWithValues.length + this._oBundle.getText("ActiveFilter"),
+            var sText = aFiltersWithValues.length + this._oBundle.getText("ActiveFilters"),
                 aNonVisibleFiltersWithValues = this.oFilterBar.retrieveNonVisibleFiltersWithValues();
 
             if (aFiltersWithValues.length === 1) {
-                sText = aFiltersWithValues.length + this._oBundle.getText("ActiveFilter");
+                sText = aFiltersWithValues.length + this._oBundle.getText("ActiveFilters");
             }
 
             if (aNonVisibleFiltersWithValues && aNonVisibleFiltersWithValues.length > 0) {
-                sText += " (" + aNonVisibleFiltersWithValues.length + this._oBundle.getText("ActiveFilter") + " )";
+                sText += " (" + aNonVisibleFiltersWithValues.length + this._oBundle.getText("ActiveFilters") + " )";
             }
 
             return sText;
@@ -582,14 +574,12 @@ sap.ui.define([
 
         //Beim App-Verlassen löscht alle Abhängigkeiten/Cache
         onExit: function () {
-            // 1) Binding detach (ValueHelp rebuild)
             if (this._oItemsBinding && this._fnItemsBindingChange) {
                 this._oItemsBinding.detachChange(this._fnItemsBindingChange);
             }
             this._oItemsBinding = null;
             this._fnItemsBindingChange = null;
 
-            // 2) Column header menus destroyen (pro Spalte geladene Fragmente)
             if (Array.isArray(this._aColumnMenus)) {
                 this._aColumnMenus.forEach(function (oMenu) {
                     try {
@@ -599,7 +589,6 @@ sap.ui.define([
             }
             this._aColumnMenus = null;
 
-            // 3) (Optional) gemeinsames Menu falls du es noch irgendwo lädst
             if (this._oColumnMenu) {
                 try {
                     this._oColumnMenu.destroy();
@@ -607,7 +596,6 @@ sap.ui.define([
             }
             this._oColumnMenu = null;
 
-            // 4) ValueHelp Dialog clean-up
             if (this._oVHD) {
                 try {
                     this._oVHD.destroy();
@@ -622,7 +610,8 @@ sap.ui.define([
             }
             this._oBasicSearchField = null;
 
-            // 6) Rest 
+            document.body.classList.remove("billingNoPageScroll");
+
             this.oModel = null;
             this.oSmartVariantManagement = null;
             this.oExpandedLabel = null;
@@ -652,23 +641,16 @@ sap.ui.define([
                 invoiceId: sInvoiceId
             });
         },
-
-        // ---------------------------------------------------
-        // Löschen
-        // ---------------------------------------------------
-        onSelectionChange: function (oController, oEvent) {
+        onSelectionChange: function (oEvent) {
             const oTable = oEvent.getSource();
             const aSelected = oTable.getSelectedItems();
-            const oDeleteButton = oController.byId("btnDelete");
+            const oDeleteButton = this.byId("btnDelete");
 
             if (oDeleteButton) {
                 oDeleteButton.setEnabled(aSelected.length > 0);
             }
-        },
-
-        onExit: function () {
-            document.body.classList.remove("billingNoPageScroll");
         }
+
     }, View1Helper));
 });
 
