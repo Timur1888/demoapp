@@ -6,7 +6,8 @@
       "source": "^/application/(.*)$",
       "target": "/application/$1",
       "destination": "CCI001_PRODUCTIVE_Auth2Credential",
-      "authenticationType": "xsuaa"
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
     },
     {
       "source": "^/resources/(.*)$",
