@@ -86,10 +86,9 @@ sap.ui.define([
             this.oFilterBar.registerApplyData(this.applyData);
             this.oFilterBar.registerGetFiltersWithValues(this.getFiltersWithValues);
 
-            // WICHTIG:
-            // keinen reservierten Typ wie "filterBar" verwenden
+            // WICHTIG: Standardtyp "filterBar" verwenden
             var oPersInfo = new sap.ui.comp.smartvariants.PersonalizableInfo({
-                type: "billingFilter",
+                type: "filterBar",
                 keyName: "persistencyKey",
                 control: this.oFilterBar
             });
@@ -313,6 +312,7 @@ sap.ui.define([
 
         //spiele den im Variant gespeicherten Filterzustand wieder ein
         applyData: function (aData) {
+            aData = aData || [];
             // Filter
             aData.forEach(function (oDataObject) {
                 if (oDataObject.fieldName === "__SORT__" || oDataObject.fieldName === "__COLUMNS__") { return; }
@@ -434,10 +434,10 @@ sap.ui.define([
             }
 
             if (aFiltersWithValues.length === 1) {
-                return aFiltersWithValues.length + " " + this._oBundle.getText("FilterActives") + aFiltersWithValues.join(", ");
+                return aFiltersWithValues.length + " " + this._oBundle.getText("ActiveFilters") + aFiltersWithValues.join(", ");
             }
 
-            return aFiltersWithValues.length + " " + this._oBundle.getText("FilterActives") + aFiltersWithValues.join(", ");
+            return aFiltersWithValues.length + " " + this._oBundle.getText("ActiveFilters") + aFiltersWithValues.join(", ");
         },
 
         getFormattedSummaryTextExpanded: function () {
@@ -447,15 +447,15 @@ sap.ui.define([
                 return this._oBundle.getText("NoFilters");
             }
 
-            var sText = aFiltersWithValues.length + this._oBundle.getText("ActiveFilters"),
+            var sText = aFiltersWithValues.length + " " + this._oBundle.getText("ActiveFilters"),
                 aNonVisibleFiltersWithValues = this.oFilterBar.retrieveNonVisibleFiltersWithValues();
 
             if (aFiltersWithValues.length === 1) {
-                sText = aFiltersWithValues.length + this._oBundle.getText("ActiveFilters");
+                sText = aFiltersWithValues.length + " " + this._oBundle.getText("ActiveFilters");
             }
 
             if (aNonVisibleFiltersWithValues && aNonVisibleFiltersWithValues.length > 0) {
-                sText += " (" + aNonVisibleFiltersWithValues.length + this._oBundle.getText("ActiveFilters") + " )";
+                sText += " (" + aNonVisibleFiltersWithValues.length + " " + this._oBundle.getText("ActiveFilters") + " )";
             }
 
             return sText;
