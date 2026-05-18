@@ -55,7 +55,7 @@ modules:
   # 3) UI5 Build Modul (wie gehabt)
   - name: demoappdemoapp
     type: html5
-    path: .
+    path: Application
     build-parameters:
       build-result: dist
       builder: custom
