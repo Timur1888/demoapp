@@ -19,14 +19,14 @@
   "scripts": {
     "start": "fiori run --open \"test/flp.html#app-preview\"",
     "start-local": "fiori run --config ./ui5-local.yaml --open \"test/flp.html#app-preview\"",
-    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "build": "ui5 build -a --clean-dest",
     "deploy": "fiori cfDeploy",
     "deploy-config": "fiori add deploy-config",
     "start-noflp": "fiori run --open \"/index.html?sap-ui-xx-viewCache=false\"",
     "int-test": "fiori run --open \"test/integration/opaTests.qunit.html\"",
     "start-variants-management": "fiori run --open \"/preview.html#app-preview\"",
     "unit-test": "fiori run --open \"test/unit/unitTests.qunit.html\"",
-    "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+    "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml",
     "build:mta": "rimraf resources mta_archives && mbt build",
     "undeploy": "cf undeploy demoappdemoapp --delete-services --delete-service-keys --delete-service-brokers"
   },

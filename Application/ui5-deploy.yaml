@@ -17,6 +17,5 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: demoappdemoapp
-        relativePaths: true
         additionalFiles:
           - xs-app.json

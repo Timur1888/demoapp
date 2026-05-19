@@ -17,24 +17,22 @@
     },
     "crossNavigation": {
       "inbounds": {
-        "Object-display": {
-          "semanticObject": "Object",
-          "action": "display",
-          "title": "{{Object-display.flpTitle}}",
-          "subTitle": "{{Object-display.flpSubtitle}}",
+        "demo-app-cdm-demoapp-inbound": {
           "signature": {
             "parameters": {},
             "additionalParameters": "allowed"
-          }
+          },
+          "semanticObject": "BillingApp",
+          "action": "display",
+          "title": "Billing",
+          "subTitle": "",
+          "icon": ""
         }
       }
-    },
-    "dataSources": {
-      "clarc": {
-        "uri": "/backend/",
-        "type": "JSON"
-      }
-  }
+    }
+  },
+  "sap.fiori": {
+    "archeType": "transactional"
   },
   "sap.ui": {
     "technology": "UI5",
@@ -73,7 +71,7 @@
       "cozy": true
     },
     "config": {
-      "fullWidth": true          
+      "fullWidth": true
     },
     "models": {
       "backend": {
@@ -92,7 +90,10 @@
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
           "bundleName": "demo.app.demoapp.i18n.i18n",
-          "supportedLocales": ["de", "en"],
+          "supportedLocales": [
+            "de",
+            "en"
+          ],
           "fallbackLocale": "en"
         }
       }
@@ -125,11 +126,13 @@
             "TargetView1"
           ]
         },
-              {
+        {
           "name": "DetailsRoute",
-          "pattern": "Details/{invoiceId}",      
-          "target": ["Details"]
-      }
+          "pattern": "Details/{invoiceId}",
+          "target": [
+            "Details"
+          ]
+        }
       ],
       "targets": {
         "TargetView1": {
@@ -138,7 +141,7 @@
           "viewLevel": "1",
           "controlAggregation": "beginColumnPages"
         },
-        "Details":{
+        "Details": {
           "id": "Details",
           "name": "Details",
           "viewLevel": 2,

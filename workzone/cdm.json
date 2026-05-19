@@ -1,0 +1,75 @@
+[
+  {
+    "_version": "3.0",
+    "identification": {
+      "entityType": "catalog",
+      "id": "demo.app.demoapp",
+      "title": "{{appTitle}}"
+    },
+    "payload": {
+      "viz": [
+        {
+          "appId": "demo.app.demoapp",
+          "vizId": "demo-app-cdm-demoapp-inbound"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "Demoapp Billing Catalog"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "entityType": "group",
+      "id": "demo.app.demoapp",
+      "title": "{{appTitle}}"
+    },
+    "payload": {
+      "viz": [
+        {
+          "appId": "demo.app.demoapp",
+          "vizId": "demo-app-cdm-demoapp-inbound"
+        }
+      ]
+    },
+    "texts": [
+      {
+        "locale": "",
+        "textDictionary": {
+          "title": "Demoapp Billing Group"
+        }
+      }
+    ]
+  },
+  {
+    "_version": "3.0",
+    "identification": {
+      "entityType": "role",
+      "id": "demo.app.demoapp.cdm",
+      "title": "Demoapp Billing Role"
+    },
+    "payload": {
+      "apps": [
+        {
+          "id": "demo.app.demoapp"
+        }
+      ],
+      "catalogs": [
+        {
+          "id": "demo.app.demoapp"
+        }
+      ],
+      "groups": [
+        {
+          "id": "demo.app.demoapp"
+        }
+      ]
+    }
+  }
+]
